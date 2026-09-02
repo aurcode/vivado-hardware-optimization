@@ -1,5 +1,6 @@
 # Vivado HLS Build and Solution Artifacts
 test/
+scripts/phase5_dse/proj_*/
 *.log
 *.jou
 hs_err_*.log
@@ -18,7 +19,6 @@ venv*/
 data/
 *.pt
 real_world_data/
-*.png
 include_xilinx/
 
 # Local benchmark output (preserve baseline benchmark_server.json)
