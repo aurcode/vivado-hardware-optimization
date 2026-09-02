@@ -3,7 +3,7 @@
 # ==============================================================================
 
 CXX         := g++
-CXXFLAGS    := -O3 -Wall -Wextra -Wno-unknown-pragmas -std=c++11
+CXXFLAGS    := -O2 -Wall -Wno-unknown-pragmas -Wno-unused-parameter -std=c++11 -I. -Iinclude_xilinx -Igolden_vectors
 
 HLS_BIN     := vivado_hls
 TCL_SCRIPT  := run_hls.tcl

@@ -31,11 +31,11 @@ open_project -reset test
 set_top mlp_accel
 
 # 2. Add Design Files
-add_files mlp.cpp
+add_files mlp.cpp -cflags "-I. -Igolden_vectors"
 add_files mlp.hpp
 
 # 3. Add Testbench Files
-add_files -tb tb_mlp.cpp -cflags "-Wno-unknown-pragmas"
+add_files -tb tb_mlp.cpp -cflags "-Wno-unknown-pragmas -I. -Igolden_vectors"
 
 # 4. Solution Configuration
 open_solution -reset "solution1"

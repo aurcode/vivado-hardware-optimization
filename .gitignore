@@ -17,6 +17,7 @@ __pycache__/
 venv*/
 data/
 *.pt
+include_xilinx/
 
 # Local benchmark output (preserve baseline benchmark_server.json)
 benchmark_vmi*.json
