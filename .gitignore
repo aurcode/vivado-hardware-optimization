@@ -1,0 +1,18 @@
+# Vivado HLS Build and Solution Artifacts
+test/
+*.log
+*.jou
+hs_err_*.log
+
+# Compiled Binaries and Objects
+sim_mlp
+bench_mlp
+test_mlp
+*.o
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local benchmark output (preserve baseline benchmark_server.json)
+benchmark_vmi*.json
