@@ -3,6 +3,7 @@
 #include <cmath>
 #include "mlp.hpp"
 #include "golden_test_data.h"
+#include "realworld_test_data.h"
 
 int main() {
     std::cout << "==================================================================\n";
@@ -12,17 +13,18 @@ int main() {
     std::cout << "  Hardware    : Time-Division Multiplexed (TDM) 16-SIMD Core      \n";
     std::cout << "==================================================================\n\n";
 
-    int errors = 0;
-    int correct_classifications = 0;
-    const int TOLERANCE_LSB = 1; // Exactly bit-accurate within 1 LSB
+    // -------------------------------------------------------------------------
+    // PART 1: Level 1 Standard MNIST Dataset Verification
+    // -------------------------------------------------------------------------
+    std::cout << "--- [PART 1: Level 1 Standard MNIST Verification (20 Samples)] ---\n";
+    int errors_l1 = 0;
+    int correct_l1 = 0;
+    const int TOLERANCE_LSB = 1;
 
     for (int t = 0; t < NUM_TEST_SAMPLES; ++t) {
         data_t hw_result[OUTPUT_NODES];
-
-        // 1. Execute Hardware Accelerator Top-Level Function
         mlp_accel(golden_inputs[t], hw_result);
 
-        // 2. Determine Predicted Class via Argmax
         int hw_pred = 0;
         data_t max_logit = hw_result[0];
         for (int k = 1; k < OUTPUT_NODES; ++k) {
@@ -35,10 +37,9 @@ int main() {
         int true_label = golden_labels[t];
         bool class_match = (hw_pred == true_label);
         if (class_match) {
-            correct_classifications++;
+            correct_l1++;
         }
 
-        // 3. Compare Hardware Logits vs Bit-Accurate Golden Software Tensors
         int max_logit_diff = 0;
         for (int k = 0; k < OUTPUT_NODES; ++k) {
             int diff = std::abs((int)hw_result[k] - (int)golden_logits[t][k]);
@@ -47,29 +48,58 @@ int main() {
             }
         }
 
-        std::cout << "[Test Sample " << std::setw(2) << (t + 1) << "/" << NUM_TEST_SAMPLES << "] "
-                  << "Label: " << true_label << " | "
-                  << "HW Pred: " << hw_pred << " | "
-                  << "Max Logit Diff: " << std::setw(3) << max_logit_diff << " LSB"
-                  << " --> " << (class_match ? "[MATCH]" : "[MISMATCH]");
-
+        std::cout << "  [MNIST Sample " << std::setw(2) << (t + 1) << "] "
+                  << "Label: " << true_label << " | Pred: " << hw_pred
+                  << " | Diff: " << max_logit_diff << " LSB --> "
+                  << (class_match ? "[MATCH]" : "[MISMATCH]")
+                  << (max_logit_diff <= TOLERANCE_LSB ? " [PASS]\n" : " [FAIL]\n");
         if (max_logit_diff > TOLERANCE_LSB) {
-            std::cout << " [FAIL: Diff > " << TOLERANCE_LSB << " LSB]\n";
-            errors++;
-        } else {
-            std::cout << " [PASS]\n";
+            errors_l1++;
         }
     }
 
+    // -------------------------------------------------------------------------
+    // PART 2: Level 2 Real-World Camera & Handwriting Preprocessed Dataset
+    // -------------------------------------------------------------------------
+    std::cout << "\n--- [PART 2: Level 2 Real-World Handwritten Verification (20 Samples)] ---\n";
+    int correct_realworld = 0;
+    for (int t = 0; t < NUM_REALWORLD_SAMPLES; ++t) {
+        data_t hw_result[OUTPUT_NODES];
+        mlp_accel(realworld_inputs[t], hw_result);
+
+        int hw_pred = 0;
+        data_t max_logit = hw_result[0];
+        for (int k = 1; k < OUTPUT_NODES; ++k) {
+            if (hw_result[k] > max_logit) {
+                max_logit = hw_result[k];
+                hw_pred = k;
+            }
+        }
+
+        int true_label = realworld_labels[t];
+        bool class_match = (hw_pred == true_label);
+        if (class_match) {
+            correct_realworld++;
+        }
+
+        std::cout << "  [RealWorld " << std::setw(2) << (t + 1) << "] "
+                  << "Label: " << true_label << " | Pred: " << hw_pred
+                  << " | SoftPred: " << realworld_preds[t]
+                  << " --> " << (class_match ? "[MATCH PASS]\n" : "[MISMATCH]\n");
+    }
+
+    float acc_l1 = 100.0f * correct_l1 / NUM_TEST_SAMPLES;
+    float acc_rw = 100.0f * correct_realworld / NUM_REALWORLD_SAMPLES;
+
     std::cout << "\n==================================================================\n";
     std::cout << "  Verification Summary:\n";
-    std::cout << "  - Classification Accuracy : " << correct_classifications << "/" << NUM_TEST_SAMPLES 
-              << " (" << (100.0f * correct_classifications / NUM_TEST_SAMPLES) << "%)\n";
-    std::cout << "  - Logit Precision Errors  : " << errors << "\n";
+    std::cout << "  - Level 1 MNIST Accuracy     : " << correct_l1 << "/" << NUM_TEST_SAMPLES << " (" << acc_l1 << "%)\n";
+    std::cout << "  - Level 2 Real-World Accuracy: " << correct_realworld << "/" << NUM_REALWORLD_SAMPLES << " (" << acc_rw << "%)\n";
+    std::cout << "  - Bit-Accurate Logit Errors  : " << errors_l1 << "\n";
     std::cout << "==================================================================\n";
 
-    if (errors == 0 && correct_classifications >= (NUM_TEST_SAMPLES * 9 / 10)) {
-        std::cout << "  LEVEL 1 VERIFICATION PASSED SUCCESSFULLY!\n";
+    if (errors_l1 == 0 && acc_l1 >= 90.0f && acc_rw >= 85.0f) {
+        std::cout << "  LEVEL 1 & LEVEL 2 VERIFICATION PASSED SUCCESSFULLY!\n";
         std::cout << "==================================================================\n";
         return 0; // Return 0 for Vivado HLS csim/cosim success
     } else {
