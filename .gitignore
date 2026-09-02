@@ -10,9 +10,13 @@ bench_mlp
 test_mlp
 *.o
 
-# Python cache
+# Python cache and environments
 __pycache__/
 *.pyc
+.venv*/
+venv*/
+data/
+*.pt
 
 # Local benchmark output (preserve baseline benchmark_server.json)
 benchmark_vmi*.json
