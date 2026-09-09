@@ -11,11 +11,11 @@
 ## Slide 1: Title & Project Overview
 
 ### High-Efficiency 784-64-10 MLP Neural Accelerator on Xilinx Zynq-7000
-- **Core Mission**: Design, synthesize, verify, and benchmark an edge neural network accelerator for handwritten digit recognition (${28 \times 28}$ grayscale images) under strict FPGA resource constraints.
+- **Core Mission**: Design, synthesize, verify, and benchmark an edge neural network accelerator for handwritten digit recognition (28 × 28 grayscale images) under strict FPGA resource constraints.
 - **Target Device**: Xilinx Zynq-7000 All-Programmable SoC (`xc7z020clg400-1`), 100 MHz target clock.
 - **Design Philosophy**: Strict separation of Datapath and Controller; Time-Division Multiplexed (TDM) hardware reuse; conflict-free on-chip memory access; bit-accurate quantization.
 - **Key Results**:
-  - **Level 1**: Timing closed with $+2.45 \text{ ns}$ slack at 100 MHz; 16 DSPs with 100% operator reuse; 2,100 LUTs (3.95%); 31.8 µs latency (31,446 FPS).
+  - **Level 1**: Timing closed with +2.45 ns slack at 100 MHz; 16 DSPs with 100% operator reuse; 2,100 LUTs (3.95%); 31.8 µs latency (31,446 FPS).
   - **Level 2**: 7-step real-world preprocessing pipeline; 100-sample cohort benchmark; 100.0% noise rejection.
   - **Level 3**: Multi-tier PTQ sweep; formal mathematical proof of 11-bit saturation knee point; Pareto frontier optimization.
 
@@ -47,10 +47,10 @@
 ## Slide 3: Algorithmic Architecture (784-64-10 MLP)
 
 ### Network Topology & Bias-Free Formulation
-- **Layer 1 (FC1)**: 784 Inputs $\to$ 64 Hidden Neurons $\to$ ReLU Activation Function.
+- **Layer 1 (FC1)**: 784 Inputs → 64 Hidden Neurons → ReLU Activation Function.
   - Weight Matrix $W_1 \in \mathbb{R}^{64 \times 784}$ (50,176 parameters).
   - Formulation: $a_1 = \max(0, W_1 \cdot X)$.
-- **Layer 2 (FC2)**: 64 Hidden Neurons $\to$ 10 Output Neurons $\to$ Linear Logits.
+- **Layer 2 (FC2)**: 64 Hidden Neurons → 10 Output Neurons → Linear Logits.
   - Weight Matrix $W_2 \in \mathbb{R}^{10 \times 64}$ (640 parameters).
   - Formulation: $z_2 = W_2 \cdot a_1$.
 - **Output Layer**: 10-Class Argmax Classifier: $d^* = \arg\max_{c \in [0, 9]} \{ z_{2, c} \}$.
@@ -93,14 +93,14 @@
 - **Operand Type (`custom_data_t`)**: `ap_fixed<11, 3, AP_RND, AP_SAT>`
   - Total Wordlength ($W$): 11 bits.
   - Integer Field ($I$): 3 bits (1 sign bit + 2 magnitude bits).
-  - Fractional Field ($F$): 8 bits (Q3.8 format, scale factor ${2^8 = 256}$).
-  - Resolution Step ($\Delta$): ${2^{-8} = 1/256 = 0.00390625}$.
+  - Fractional Field ($F$): 8 bits (Q3.8 format, scale factor 2⁸ = 256).
+  - Resolution Step ($\Delta$): 2⁻⁸ = 1/256 = 0.00390625.
   - Dynamic Range: $[-4.0, +3.99609375]$.
   - Statistical Fit: Measured weights lie strictly within $[-1.000, +0.676]$ and inputs in $[0.0, 1.0]$. Zero clipping occurs during normal execution.
 - **Accumulator Type (`acc_t`)**: `ap_fixed<24, 8, AP_RND, AP_SAT>`
   - Multiplier output generates up to 22 bits ($I_{\text{prod}} = 6, F_{\text{prod}} = 16$).
   - 784-term accumulation theoretical bit growth: $\log_2(784) \approx 9.61 \text{ bits}$.
-  - An 8-bit integer field supports values up to $\pm 128.0$, providing **$+12 \text{ dB}$ of headroom** over the maximum observed inner product (< 32.0). Guarantees zero arithmetic saturation during dot-product reduction.
+  - An 8-bit integer field supports values up to $\pm 128.0$, providing **+12 dB of headroom** over the maximum observed inner product (< 32.0). Guarantees zero arithmetic saturation during dot-product reduction.
 
 > **Speaker Notes (Role C - Quantization Engineer)**:  
 > "In Slide 4, we define our numerical format. An 11-bit wordlength with 3 integer bits provides a dynamic range of negative 4.0 to positive 3.996. Our weight statistics show maximum values under 1.0, meaning the 11-bit type fits weights perfectly with zero clipping. In the accumulator, we allocate 24 bits with 8 integer bits, guaranteeing zero saturation during the 784-term accumulation."
@@ -159,8 +159,8 @@
 ### Time-Division Multiplexed Hardware Reuse
 - **State Flow**: `IDLE` $\to$ `LOAD_INP` $\to$ `CALC_FC1` $\to$ `RELU` $\to$ `CALC_FC2` $\to$ `ARGMAX` $\to$ `DONE`.
 - **Hardware Reuse Proof**:
-  - FC1 requires ${64 \times 49 = 3,136}$ SIMD operations.
-  - FC2 requires ${10 \times 4 = 40}$ SIMD operations.
+  - FC1 requires 64 × 49 = 3,136 SIMD operations.
+  - FC2 requires 10 × 4 = 40 SIMD operations.
   - Both layers sequentially time-share the **single instance** of `simd_mac16`.
   - `#pragma HLS INLINE OFF` creates a dedicated RTL module `simd_mac16.v`.
   - Synthesis report confirms **exactly 16 DSP48E1 blocks** instantiated in the entire chip.
@@ -229,7 +229,7 @@ $$
   All 16 parallel SIMD lanes access **independent physical memory banks** simultaneously in every cycle.
   - Zero bank contention.
   - Sustained memory bandwidth: **17.6 Gbps**.
-  - Initiation Interval: strictly $\mathbf{II = 1}$.
+  - Initiation Interval: strictly **II = 1**.
 
 > **Speaker Notes (Role E - Storage & Control Engineer)**:  
 > "On Slide 7, we address the memory bandwidth challenge. To feed 16 parallel multipliers every cycle, we applied cyclic array partitioning with factor 16 to both input and activation buffers. Since the address modulo 16 equals the SIMD lane index k, each lane reads from a distinct physical RAM bank with zero port collisions, guaranteeing II equals 1."
@@ -242,13 +242,13 @@ $$
 
 | Hardware Resource / Parameter | Available (XC7Z020) | Used by Accelerator | Utilization (%) | Target Constraint | Status |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **LUT (Look-Up Tables)** | 53,200 | **2,100** | **3.95%** | $\le 10,000$ | **PASSED** |
-| **FF (Flip-Flops)** | 106,400 | **2,280** | **2.14%** | $\le 20,000$ | **PASSED** |
-| **DSP48E1 Slices** | 220 | **16** | **7.27%** | $\le 32$ | **PASSED (100% Reuse)** |
-| **BRAM_18K Blocks** | 140 | **2** | **1.43%** | $\le 8$ | **PASSED** |
+| **LUT (Look-Up Tables)** | 53,200 | **2,100** | **3.95%** | ≤ 10,000 | **PASSED** |
+| **FF (Flip-Flops)** | 106,400 | **2,280** | **2.14%** | ≤ 20,000 | **PASSED** |
+| **DSP48E1 Slices** | 220 | **16** | **7.27%** | ≤ 32 | **PASSED (100% Reuse)** |
+| **BRAM_18K Blocks** | 140 | **2** | **1.43%** | ≤ 8 | **PASSED** |
 | **Target Clock Period** | 10.000 ns | 10.000 ns | 100.0 MHz | 100 MHz | **PASSED** |
 | **Achieved Clock Period** | — | **7.550 ns** | **132.45 MHz** | < 10.0 ns | **PASSED** |
-| **Worst Negative Slack (WNS)**| — | **+2.450 ns** | — | $\ge 0.0 \text{ ns}$ | **PASSED (+24.5% Margin)** |
+| **Worst Negative Slack (WNS)**| — | **+2.450 ns** | — | ≥ 0.0 ns | **PASSED (+24.5% Margin)** |
 | **SIMD Compute Latency** | — | **3,176 cycles** | **31.76 µs** | < 100 µs | **PASSED** |
 | **Peak Throughput** | — | **31,446 FPS** | — | Real-Time | **PASSED** |
 
@@ -275,8 +275,8 @@ $$
 ## Slide 10: Level 2 Real-World Preprocessing Pipeline (7 Steps)
 
 ### Bridging the Mobile Camera Domain Gap
-- **Input**: Raw smartphone photos (${1920 \times 1080}$ RGB, unconstrained lighting, pens, and paper).
-- **Output**: Standardized ${28 \times 28}$ normalized vector with fixed-point scale ${2^8 = 256}$.
+- **Input**: Raw smartphone photos (1920 × 1080 RGB, unconstrained lighting, pens, and paper).
+- **Output**: Standardized 28 × 28 normalized vector with fixed-point scale 2⁸ = 256.
 
 ```
 [ Raw RGB Image ]
@@ -377,7 +377,7 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 | **4-bit Ultra-Edge** | 4 | Q2.2 | **85.00%** | **-13.00%** | 820 | 4 | 1 | 31.8 µs |
 | **8-bit Parallel-32** | 8 | Q3.5 | **98.00%** | +0.00% | 2,890 | 16 | 4 | **16.1 µs** |
 
-- **Key Takeaway**: 16-bit incurs 52.4% higher LUT utilization and double the BRAMs with **identically zero accuracy gain** ($\Delta \text{Acc} \equiv 0.00\\%$).
+- **Key Takeaway**: 16-bit incurs 52.4% higher LUT utilization and double the BRAMs with **identically zero accuracy gain** ($\Delta \text{Acc} \equiv 0.00\%$).
 - **The Degradation Cliff**: Precision below 8 bits suffers an accuracy drop, crashing to 85.00% at 4 bits (violating the 90% specification).
 
 > **Speaker Notes (Role H - Synthesis & DSE Engineer)**:  
@@ -388,8 +388,18 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 ## Slide 14: Saturation Knee Point Mathematical Proof & Pareto Frontier
 
 ### Statistical Derivation of the 11-Bit Saturation Knee Point
-1. **Widrow Error**: $\sigma_q^2 = \frac{\Delta^2}{12} = \frac{2^{-2F}}{12}$.
-2. **784-D Accumulation**: $\sigma_{z1}^2 = 784 \cdot (\overline{x^2} + \overline{w_1^2}) \cdot \frac{\Delta^2}{12} \implies \sigma_{z1} = 2.7456 \cdot 2^{-F}$.
+1. **Widrow Error**:
+
+$$
+\sigma_q^2 = \frac{\Delta^2}{12} = \frac{2^{-2F}}{12}
+$$
+
+2. **784-D Accumulation**:
+
+$$
+\sigma_{z1}^2 = 784 \cdot (\overline{x^2} + \overline{w_1^2}) \cdot \frac{\Delta^2}{12} \implies \sigma_{z1} = 2.7456 \cdot 2^{-F}
+$$
+
 3. **Logit Margin & Q-Function**:
 
 $$
@@ -397,7 +407,7 @@ P(\text{flip} \mid \Delta z) = Q\left( \frac{\Delta z}{\sqrt{2}\sigma_{z2}} \rig
 $$
 
    - At $W = 11$ ($F=8, \Delta = 2^{-8}$): $\sqrt{2}\sigma_{z2} = 0.0234 \ll 2.96$ (10th percentile margin).  
-     Ratio is ${126.3 \implies Q(126.3) \approx 0}$. **Decision flips are mathematically impossible.**
+     Ratio is 126.3, yielding $Q(126.3) \approx 0$. **Decision flips are mathematically impossible.**
    - At $W = 4$ ($F=2, \Delta = 0.25$): $\sqrt{2}\sigma_{z2} \approx 1.50 \sim \mathcal{O}(\Delta z)$. Differential noise breaches class margins, causing **catastrophic collapse**.
 
 ### Pareto Dominance
@@ -425,7 +435,7 @@ $$
 - **End-to-End System Pipeline on Zynq-7000**:
   - ARM Cortex-A9 Host: Executes 7-step preprocessing in 1.85 ms.
   - FPGA Hardware Core: Executes inference in 0.032 ms.
-  - System Throughput: $\mathbf{526 \text{ frames per second}}$ sustained end-to-end.
+  - System Throughput: **526 frames per second** sustained end-to-end.
 
 > **Speaker Notes (Role A - Lead Architect)**:  
 > "In Slide 15, we present our engineering deployment recommendations. For general edge applications, we recommend the 11-bit baseline: it consumes less than 8% of chip resources while guaranteeing maximum accuracy. For ultra-low-power IoT nodes, 8-bit compact cuts DSP usage to just 8 slices with zero accuracy loss. When paired with ARM host preprocessing, our system achieves an end-to-end frame rate of 526 FPS."

@@ -17,8 +17,8 @@
 **Model Answer (Role A)**:  
 "We evaluated three distinct architectural paradigms against the mathematical dimensions of the 784-64-10 MLP and the resource budget of the Xilinx XC7Z020:
 
-1. **Fully Unrolled Datapath**: Fully unrolling FC1 (${64 \times 784 = 50,176}$ multiplications) would require over 50,000 DSP slices or massive LUT multipliers, instantly exceeding the 220 DSP slices available on the XC7Z020 by more than 220×.
-2. **2D Systolic Array (e.g. ${8 \times 8}$ or ${16 \times 16}$)**: Systolic arrays excel at matrix-matrix multiplication (GEMM) in batched inference or CNN convolutions where input activations are reused across multiple columns. However, our accelerator performs **single-frame streaming vector inference (GEMV)**, where the input is a single vector $X \in \mathbb{R}^{784 \times 1}$. In GEMV, input activations cannot be reused across batch dimensions; each weight is fetched and multiplied exactly once. A 2D systolic array would suffer from severe pipeline filling/draining latency overhead and idle processing elements (PE utilization < 25%).
+1. **Fully Unrolled Datapath**: Fully unrolling FC1 (64 × 784 = 50,176 multiplications) would require over 50,000 DSP slices or massive LUT multipliers, instantly exceeding the 220 DSP slices available on the XC7Z020 by more than 220×.
+2. **2D Systolic Array (e.g. 8 × 8 or 16 × 16$)**: Systolic arrays excel at matrix-matrix multiplication (GEMM) in batched inference or CNN convolutions where input activations are reused across multiple columns. However, our accelerator performs **single-frame streaming vector inference (GEMV)**, where the input is a single vector $X \in \mathbb{R}^{784 \times 1}$. In GEMV, input activations cannot be reused across batch dimensions; each weight is fetched and multiplied exactly once. A 2D systolic array would suffer from severe pipeline filling/draining latency overhead and idle processing elements (PE utilization < 25%).
 3. **1D TDM SIMD Architecture**: In contrast, our 16-way SIMD MAC core matches the natural memory bandwidth of on-chip BRAM (16 words per cycle) and maintains **100% PE utilization** throughout all 3,176 compute cycles. By time-division multiplexing the same core between FC1 and FC2, we achieved a compute latency of just **31.8 µs (31,446 FPS)** while consuming only **16 DSP48E1 slices (7.27%)**, leaving over 92% of the FPGA available for camera interfaces and image preprocessing."
 
 ---
@@ -30,7 +30,7 @@
 **Model Answer (Role A)**:  
 "Our interface selection was guided by quantitative analysis of payload size, latency overhead, and driver complexity on the Zynq-7000:
 
-1. **Payload Size vs. DMA Setup Overhead**: A single ${28 \times 28}$ image in `ap_fixed<11, 3>` format constitutes exactly ${784 \times 2 \text{ bytes} = 1,568 \text{ bytes}}$ ($\approx$ 1.5 KB). Initializing an AXI DMA engine requires descriptor fetches, cache flushing, interrupt handling, and register configuration on the ARM Cortex-A9 host, which incurs an OS driver latency of **15 to 35 µs**.
+1. **Payload Size vs. DMA Setup Overhead**: A single 28 × 28 image in `ap_fixed<11, 3>` format constitutes exactly 784 × 2 bytes = 1,568 bytes ($\approx$ 1.5 KB). Initializing an AXI DMA engine requires descriptor fetches, cache flushing, interrupt handling, and register configuration on the ARM Cortex-A9 host, which incurs an OS driver latency of **15 to 35 µs**.
 2. **Transfer Latency Comparison**: In our design, the accelerator compute latency is **31.76 µs**. Direct register/memory-mapped writes over AXI4-Lite at 100 MHz transfer 784 words in **7.84 µs** without OS context switching or DMA descriptor overhead.
 3. **Resource Efficiency**: An AXI DMA core consumes approximately 1,200 LUTs and 1,500 FFs. Eliminating DMA allowed us to keep the entire accelerator's logic footprint at only **2,100 LUTs (3.95%)**.
 4. **Scalability Note**: For future multi-camera batched workloads ($B \ge 64$ frames), we have preserved the AXI-Stream interface hooks in `mlp_accel.h`, but for single-frame interactive handwriting inference, AXI4-Lite provides minimum end-to-end latency."
@@ -79,7 +79,7 @@
 
 1. **Dynamic Range Profiling**: Direct analysis of the trained floating-point weights showed that FC1 weights range within $[-0.8320, +0.5195]$ and FC2 weights within $[-1.0000, +0.6758]$, while normalized input pixels range within $[0.0, 1.0]$. The maximum absolute value across all parameters is exactly 1.000. An integer field of $I = 3$ bits (1 sign bit + 2 magnitude bits) represents the dynamic range $[-4.0, +3.99609375]$, providing **+6.0 dB of headroom** to completely prevent overflow while utilizing the minimum possible integer bits.
 2. **Fractional Resolution**: 8 fractional bits ($F = 8$) yield a quantization step size of $\Delta = 2^{-8} = 0.00390625$. As proved in our Level 3 noise accumulation theorem, accumulating 784 noise terms with $F = 8$ produces an output logit standard deviation of $\sigma_{z2} \approx 0.0166$, which is 126× smaller than the 10th percentile decision margin (2.96), guaranteeing zero decision flips.
-3. **Xilinx DSP48E1 Primitive Matching**: The internal multiplier of a Xilinx 7-Series DSP48E1 slice natively supports an **${18 \times 25}$ bit signed multiplication**. Packing 11-bit operands into the DSP48E1 requires only 1 DSP slice per lane and consumes fewer interconnect routing tracks than 16-bit operands, reducing routing congestion and dynamic switching power by over 34% compared to 16-bit."
+3. **Xilinx DSP48E1 Primitive Matching**: The internal multiplier of a Xilinx 7-Series DSP48E1 slice natively supports an **18 × 25 bit signed multiplication**. Packing 11-bit operands into the DSP48E1 requires only 1 DSP slice per lane and consumes fewer interconnect routing tracks than 16-bit operands, reducing routing congestion and dynamic switching power by over 34% compared to 16-bit."
 
 ---
 
@@ -102,9 +102,11 @@ $$
 \Delta I_{\text{accum}} = \lceil \log_2(784) \rceil = 10 \text{ bits}
 $$
 
-   Adding this to the product's 6 integer bits would theoretically suggest ${6 + 10 = 16}$ integer bits. However, empirical statistics show that input pixels have a mean of 0.12 and weights have a mean of 0.002. The maximum positive logit observed across all test vectors is +10.54. Allocating **$I = 8$ integer bits** supports numbers up to $[-128.0, +127.999]$, providing an immense safety margin of 12× over the maximum observed activation.
+   Adding this to the product's 6 integer bits would theoretically suggest 6 + 10 = 16 integer bits. However, empirical statistics show that input pixels have a mean of 0.12 and weights have a mean of 0.002. The maximum positive logit observed across all test vectors is +10.54. Allocating **I = 8 integer bits** supports numbers up to $[-128.0, +127.999]$, providing an immense safety margin of 12× over the maximum observed activation.
 3. **Fractional Preservation**: Preserving all 16 fractional bits ($F = 16$) throughout the 4-stage binary adder tree prevents intermediate truncation noise from accumulating across the 784 additions.
-4. **Conclusion**: Therefore, ${W = 8 \ (\text{integer}) + 16 \ (\text{fractional}) = \mathbf{24 \text{ bits}}}$. This guarantees mathematically that not a single arithmetic saturation or precision truncation occurs prior to the final ReLU/Argmax stage."
+4. **Conclusion**: Therefore, $$
+W = 8 \text{ (integer)} + 16 \text{ (fractional)} = \mathbf{24 \text{ bits}}
+$$. This guarantees mathematically that not a single arithmetic saturation or precision truncation occurs prior to the final ReLU/Argmax stage."
 
 ---
 
@@ -117,12 +119,12 @@ $$
 **Model Answer (Role D)**:  
 "If written as a sequential `for` loop (`for (int k=0; k<16; k++) sum += prod[k];`), Vivado HLS by default attempts to schedule a linear accumulation chain:
 1. **Critical Path in Linear Accumulation**: A linear chain consists of 15 cascaded adders in series. Even with carry-lookahead logic, 15 serial additions of 24-bit fixed-point numbers have an unpipelined delay of over 14 ns, which would violate our 10.0 ns clock period and force the tool to insert multiple pipeline registers or fail timing closure.
-2. **Balanced Binary Tree Optimization**: By explicitly partitioning the reduction into 4 balanced stages (${16 \to 8 \to 4 \to 2 \to 1}$):
+2. **Balanced Binary Tree Optimization**: By explicitly partitioning the reduction into 4 balanced stages (16 → 8 → 4 → 2 → 1):
    - Stage 1: 8 adders in parallel (computes $p_{2k} + p_{2k+1}$).
    - Stage 2: 4 adders in parallel.
    - Stage 3: 2 adders in parallel.
    - Stage 4: 1 final adder plus accumulator feedback register.
-3. **Logarithmic Delay Scaling**: The combinational logic depth is reduced from ${15 \cdot T_{\text{add}}}$ down to $\lceil \log_2(16) \rceil \cdot T_{\text{add}} = 4 \cdot T_{\text{add}}$. This bounded delay fits comfortably within the 10.0 ns target clock, achieving an achieved clock period of **7.55 ns** and a positive timing slack of **+2.45 ns**."
+3. **Logarithmic Delay Scaling**: The combinational logic depth is reduced from $15 \cdot T_{\text{add}}$ down to $\lceil \log_2(16) \rceil \cdot T_{\text{add}} = 4 \cdot T_{\text{add}}$. This bounded delay fits comfortably within the 10.0 ns target clock, achieving an achieved clock period of **7.55 ns** and a positive timing slack of **+2.45 ns**."
 
 ---
 
@@ -182,7 +184,7 @@ $$
 $$
 
    Because the bank index depends solely on $k$, all 16 parallel SIMD lanes read from **16 distinct physical BRAM/LUTRAM banks** simultaneously.
-2. **Result**: Zero memory port collisions occur, sustaining the full memory bandwidth of 17.6 Gbps and achieving a deterministic Initiation Interval of **$\text{II} = 1$** across both FC1 and FC2 compute loops."
+2. **Result**: Zero memory port collisions occur, sustaining the full memory bandwidth of 17.6 Gbps and achieving a deterministic Initiation Interval of **II = 1** across both FC1 and FC2 compute loops."
 
 ---
 
@@ -200,9 +202,24 @@ $$
    - Boundary 2: FC1 hidden layer pre-activations $z_1 \in \mathbb{R}^{64}$ and post-ReLU activations $a_1 \in \mathbb{R}^{64}$.
    - Boundary 3: FC2 output logits $z_2 \in \mathbb{R}^{10}$ and Argmax class index.
 2. **Metric Instrumentation**: At each boundary, the testbench computes three divergence metrics between C++ simulation and the Python golden reference:
-   - Maximum Absolute Error: $\text{MAE} = \max_i |y_{\text{hw}, i} - y_{\text{ref}, i}|$.
-   - Root Mean Square Error: $\text{RMSE} = \sqrt{\frac{1}{N} \sum_i (y_{\text{hw}, i} - y_{\text{ref}, i})^2}$.
-   - Bit-Mismatch Count: $\sum_i \mathbb{I}(y_{\text{hw}, i} \neq y_{\text{ref}, i})$.
+   - Maximum Absolute Error:
+
+$$
+\text{MAE} = \max_i |y_{\text{hw}, i} - y_{\text{ref}, i}|
+$$
+
+   - Root Mean Square Error:
+
+$$
+\text{RMSE} = \sqrt{\frac{1}{N} \sum_i (y_{\text{hw}, i} - y_{\text{ref}, i})^2}
+$$
+
+   - Bit-Mismatch Count:
+
+$$
+\text{Mismatches} = \sum_i \mathbb{I}(y_{\text{hw}, i} \neq y_{\text{ref}, i})
+$$
+
 3. **Automated Error Localization**: If a mismatch occurred at Boundary 3, the framework automatically checked Boundary 2. If Boundary 2 matched perfectly, the fault was isolated to FC2 weights or accumulation. This allowed us to immediately catch and resolve issues such as rounding mode discrepancies (`AP_RND` vs truncation) and array index order mismatches."
 
 ---
@@ -248,7 +265,13 @@ Co-simulation is essential because it exposes four critical classes of hardware 
 "We designed a two-tiered rejection mechanism operating across both the preprocessor and the neural network datapath:
 
 1. **Tier 1 (Preprocessor Stroke Energy Gate)**:
-   - The preprocessor evaluates the total integrated stroke energy $E_{\text{stroke}} = \sum_{i=0}^{783} X_{\text{norm}, i}$ and peak intensity $I_{\max} = \max(X_{\text{norm}})$.
+   - The preprocessor evaluates total integrated stroke energy:
+
+$$
+E_{\text{stroke}} = \sum_{i=0}^{783} X_{\text{norm}, i}
+$$
+
+     and peak intensity $I_{\max} = \max(X_{\text{norm}})$.
    - Rejection condition: $E_{\text{stroke}} \lt 8.0$ OR $I_{\max} \lt 0.20$.
    - *Separation Margin*: Genuine handwritten digits in our cohort exhibit an average stroke energy of $E_{\text{stroke}} = 42.8$ (minimum 23.4). In contrast, blank recycled paper with scanner grain exhibits $E_{\text{stroke}} \le 1.8$, and faint creases exhibit $E_{\text{stroke}} \le 4.2$. The threshold of 8.0 provides an enormous 3.0× margin below the faintest genuine digit, guaranteeing zero false rejections on real writing.
 2. **Tier 2 (Hardware Peak Logit Confidence Gate)**:
@@ -293,12 +316,12 @@ $$
 "In multi-objective optimization, design point $A$ **Pareto-dominates** design point $B$ if $A$ is strictly superior in at least one metric and no worse in all other metrics:
 
 1. **Formal Proof that 16-Bit is Pareto-Dominated by 11-Bit**:
-   - Accuracy: $\text{Acc}(11\text{b}) = 98.00\\% == \text{Acc}(16\text{b}) = 98.00\\%$
-   - Logic Area: $\text{LUT}(11\text{b}) = 2,100 \lt \text{LUT}(16\text{b}) = 3,200$ (-34.4% savings)
-   - Registers: $\text{FF}(11\text{b}) = 2,280 \lt \text{FF}(16\text{b}) = 3,450$ (-33.9% savings)
-   - Block RAM: $\text{BRAM}(11\text{b}) = 2 \lt \text{BRAM}(16\text{b}) = 4$ (-50.0% savings)
-   - Latency: $\text{Latency}(11\text{b}) = 31.8 \ \mu\text{s} \lt \text{Latency}(16\text{b}) = 32.4 \ \mu\text{s}$
-   - Timing Slack: $\text{Slack}(11\text{b}) = +2.45 \text{ ns} \gt \text{Slack}(16\text{b}) = +1.82 \text{ ns}$
+   - **Accuracy**: $\text{Acc}(11\text{b}) = 98.00\% = \text{Acc}(16\text{b}) = 98.00\%$ (Identical)
+   - **Logic Area**: $\text{LUT}(11\text{b}) = 2,100 \lt \text{LUT}(16\text{b}) = 3,200$ (-34.4% savings)
+   - **Registers**: $\text{FF}(11\text{b}) = 2,280 \lt \text{FF}(16\text{b}) = 3,450$ (-33.9% savings)
+   - **Block RAM**: $\text{BRAM}(11\text{b}) = 2 \lt \text{BRAM}(16\text{b}) = 4$ (-50.0% savings)
+   - **Latency**: $\text{Latency}(11\text{b}) = 31.8 \ \mu\text{s} \lt \text{Latency}(16\text{b}) = 32.4 \ \mu\text{s}$
+   - **Timing Slack**: $\text{Slack}(11\text{b}) = +2.45 \text{ ns} \gt \text{Slack}(16\text{b}) = +1.82 \text{ ns}$
    Because 11-bit is strictly superior in LUTs, FFs, BRAMs, latency, and timing slack while matching accuracy identically, **16-bit is Pareto-dominated** and should never be deployed on edge FPGAs.
 2. **Mathematical Definition of the Saturation Knee Point**:
    The saturation knee point $W^*$ is defined as the minimum bitwidth where the second derivative of accuracy with respect to precision transitions to zero:
@@ -308,7 +331,13 @@ W^* = \min \left\{ W \ \Big| \ \frac{\partial \text{Acc}}{\partial W} \equiv 0 \
 $$
 
    In our empirical sweep:
-   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{11\text{b} \to 16\text{b}} = \frac{98.00\\% - 98.00\\%}{16 - 11} = \mathbf{0.00\\% / \text{bit}}$
-   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{8\text{b} \to 11\text{b}} = \frac{98.00\\% - 98.00\\%}{11 - 8} = \mathbf{0.00\\% / \text{bit}}$
-   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{4\text{b} \to 8\text{b}} = \frac{98.00\\% - 85.00\\%}{8 - 4} = \mathbf{+3.25\\% / \text{bit}}$
-   The transition occurs precisely at **$W = 11$ bits**, establishing it as the optimal saturation knee point."
+
+$$
+\begin{aligned}
+\left. \frac{\Delta \text{Acc}}{\Delta W} \right|_{11\text{b} \to 16\text{b}} &= \frac{98.00\% - 98.00\%}{16 - 11} = \mathbf{0.00\% / \text{bit}} \\[8pt]
+\left. \frac{\Delta \text{Acc}}{\Delta W} \right|_{8\text{b} \to 11\text{b}} &= \frac{98.00\% - 98.00\%}{11 - 8} = \mathbf{0.00\% / \text{bit}} \\[8pt]
+\left. \frac{\Delta \text{Acc}}{\Delta W} \right|_{4\text{b} \to 8\text{b}} &= \frac{98.00\% - 85.00\%}{8 - 4} = \mathbf{+3.25\% / \text{bit}}
+\end{aligned}
+$$
+
+   The transition occurs precisely at **W = 11 bits**, establishing it as the optimal saturation knee point."

@@ -25,7 +25,7 @@
 ---
 
 ### Slide 3: Algorithmic Modeling & Lightweight Pruning
-- **Architecture:** ${784 \to 128 \to 64 \to 10}$ Multi-Layer Perceptron.
+- **Architecture:** 784 → 128 → 64 → 10$ Multi-Layer Perceptron.
 - **100% Bias-Free:** Eliminated 202 bias adders and bias storage registers; achieves **97.76%** accuracy on MNIST.
 - **Sign-Bit ReLU:** Replaced DSP comparison logic with a single sign-bit check: $x[\text{MSB}] == 0$.
 - **PTQ Sweep:** Simulated 4-bit to 16-bit precisions across 10,000 images; identified 8-bit as the optimal knee point (97.67% accuracy, 0.09% drop).
@@ -34,9 +34,9 @@
 ---
 
 ### Slide 4: Fixed-Point Arithmetic & Integer Scaling Datapath
-- **Activations:** 10 fractional bits (scale ${2^{10} = 1024}$), range $[0, 32)$.
-- **Weights:** 14 fractional bits (scale ${2^{14} = 16384}$), range $[-2, 2)$.
-- **Multiplication:** ${10 + 14 = 24}$ fractional bits (scale ${2^{24}}$).
+- **Activations:** 10 fractional bits (scale 2¹⁰ = 1024$), range $[0, 32)$.
+- **Weights:** 14 fractional bits (scale 2¹⁴ = 16384$), range $[-2, 2)$.
+- **Multiplication:** 10 + 14 = 24$ fractional bits (scale 2²⁴$).
 - **Rescaling:** Shift right by 14 bits with midpoint rounding: $(\text{acc} + 8192) \gg 14$.
 - **Hardware Impact:** Fully synthesizable Plain Old Data (`int16_t`) avoiding C++ template compilation overhead.
 > **Speaker Notes:** "We strictly eliminated all floating-point hardware. Our fixed-point integer scaling formulation maps 1:1 onto the FPGA's native 18x25 DSP48E1 multipliers."
@@ -89,8 +89,8 @@
 - **Step 2:** Background Inversion (Ink $\to$ White, Paper $\to$ Black).
 - **Step 3:** Otsu Adaptive Thresholding & shadow suppression.
 - **Step 4:** Bounding Box ROI isolation.
-- **Step 5:** Aspect-ratio preserved scaling into a ${20\times 20}$ box.
-- **Step 6:** Center-of-Mass alignment onto a ${28\times 28}$ canvas.
+- **Step 5:** Aspect-ratio preserved scaling into a 20 × 20$ box.
+- **Step 6:** Center-of-Mass alignment onto a 28 × 28$ canvas.
 > **Speaker Notes:** "To bridge the gap between ideal MNIST digits and real-world camera images, our pipeline normalizes bounding box aspect ratios and centers mass to match the training distribution."
 
 ---

@@ -12,7 +12,7 @@
 **Authoritative Answer:**
 > "We selected a TDM SIMD architecture based on a rigorous quantitative analysis of the Multi-Layer Perceptron's operational characteristics and the resource constraints of the Xilinx XC7Z020:
 > 
-> 1. **Vs. Fully Unrolled Replication:** A fully unrolled design for ${784 \to 128 \to 64 \to 10}$ requires ${100,352 + 8,192 + 640 = 109,184}$ distinct multiplications. Even with aggressive resource sharing, an unrolled pipeline across all layers would exceed the 220 DSP48E1 slices available on the XC7Z020 by more than an order of magnitude.
+> 1. **Vs. Fully Unrolled Replication:** A fully unrolled design for 784 → 128 → 64 → 10$ requires 100,352 + 8,192 + 640 = 109,184$ distinct multiplications. Even with aggressive resource sharing, an unrolled pipeline across all layers would exceed the 220 DSP48E1 slices available on the XC7Z020 by more than an order of magnitude.
 > 2. **Vs. 2D Systolic Array:** Systolic arrays excel in convolutional workloads and matrix-matrix multiplications where weight stationary or output stationary data reuse is high ($O(N^3)$ compute vs. $O(N^2)$ memory bandwidth). However, single-image edge MLP inference is fundamentally a matrix-vector multiplication ($\mathbf{y} = \mathbf{W}\mathbf{x}$), which exhibits zero weight reuse across time—every weight is fetched exactly once per inference. A 2D systolic array would suffer from low processing element (PE) utilization and significant register pipeline draining overheads.
 > 3. **The TDM Advantage:** By time-sharing a unified 16-way (or 32-way) SIMD MAC core across all layers, we achieved **100% PE utilization** during compute phases, constrained DSP consumption to just **48 DSP48E slices (21.8%)**, and kept the total latency under **82 microseconds**, which comfortably exceeds real-time frame rates."
 
@@ -48,7 +48,7 @@
 > \sigma_q^2 = \frac{\Delta^2}{12}
 > $$
 >
->    Comparing 8-bit (${2^8 = 256}$ bins) to 4-bit (${2^4 = 16}$ bins), the step size $\Delta$ increases by a factor of 16, meaning the quantization noise power increases by a factor of ${16^2 = 256}$ ($+24 \text{ dB}$ of noise).
+>    Comparing 8-bit (2⁸ = 256$ bins) to 4-bit (2⁴ = 16$ bins), the step size $\Delta$ increases by a factor of 16, meaning the quantization noise power increases by a factor of 16² = 256$ ($+24 \text{ dB}$ of noise).
 > 2. **High-Dimensional Error Accumulation in Layer 1:** In Layer 1, each neuron computes a dot product of 784 dimensions:
 >
 > $$
@@ -110,7 +110,7 @@
 > 2. **Stroke Thickness Discrepancy:** Synthetic MNIST digits were normalized with antialiased ~3-pixel strokes. Real ballpoint handwriting produces 1-pixel high-frequency lines, reducing total integrated energy in the hidden layer.
 > 3. **Our Preprocessing Mitigation:**
 >    - **Otsu Thresholding:** Dynamically computes the bimodal intensity cutoff, rejecting shadows and ambient paper lighting gradients.
->    - **Aspect-Ratio Preserved Rescaling:** Fits the digit into a ${20\times 20}$ bounding box before placing it into the ${28\times 28}$ canvas, restoring the expected stroke density.
+>    - **Aspect-Ratio Preserved Rescaling:** Fits the digit into a 20 × 20$ bounding box before placing it into the 28 × 28$ canvas, restoring the expected stroke density.
 >    - **Center-of-Mass Alignment:** Translates the intensity-weighted center $(\bar{y}, \bar{x})$ to $(14, 14)$, restoring spatial alignment with the trained MLP weights."
 
 ---
