@@ -12,11 +12,11 @@
 
 This project delivers an end-to-end, high-performance, low-power deep neural network hardware accelerator implemented on the Xilinx Zynq XC7Z020 FPGA for real-time handwritten digit recognition. Addressing stringent edge constraints—zero floating-point hardware, minimal on-chip memory footprint, and low power dissipation—the design employs:
 
-1. **Lightweight Hardware Pruning:** A 100% bias-free Multi-Layer Perceptron ($784 \to 128 \to 64 \to 10$) utilizing sign-bit comparison ReLU activations ($x > 0 \ ? \ x : 0$) and fixed-point integer scaling arithmetic.
+1. **Lightweight Hardware Pruning:** A 100% bias-free Multi-Layer Perceptron (${784 \to 128 \to 64 \to 10}$) utilizing sign-bit comparison ReLU activations ($x \gt 0 \; ? \; x : 0$) and fixed-point integer scaling arithmetic.
 2. **Time-Division Multiplexing (TDM):** A unified 16-way and 32-way SIMD Multiply-Accumulate (MAC) array reused across all three network layers via an explicit 6-state Finite State Machine (FSM) controller.
 3. **Conflict-Free On-Chip Memory:** Block-aligned 3D array partitioning (`[neurons][blocks][SIMD]`) achieving an Initiation Interval of **II = 1** across all compute loops without memory stalls.
 4. **End-to-End Verification:** Validated via bit-accurate C++ host simulation, Vivado HLS C-simulation, RTL synthesis, cycle-accurate C/RTL co-simulation in `xsim`, and packaged as a Vivado IP Catalog block.
-5. **Real-World Robustness (Level 2):** An adaptive camera image ingestion pipeline (luminance conversion, Otsu thresholding, aspect-ratio preserved scaling to $20\times 20$, and Center-of-Mass alignment onto a $28\times 28$ canvas).
+5. **Real-World Robustness (Level 2):** An adaptive camera image ingestion pipeline (luminance conversion, Otsu thresholding, aspect-ratio preserved scaling to ${20\times 20}$, and Center-of-Mass alignment onto a ${28\times 28}$ canvas).
 6. **Design Space Exploration (Level 3 Bonus):** Physical synthesis across 16-bit, 8-bit, and 4-bit precisions, revealing the **8-bit @ SIMD-32** Pareto knee point (**17,928 FPS**, 55.8 $\mu$s latency, 97.67% accuracy, using only 21.8% DSPs and 35.7% BRAMs).
 
 ---
@@ -48,10 +48,30 @@ graph TD
 
 ### 3.1 Network Architecture
 The network is tailored for edge inference:
-$$\mathbf{z}_1 = \mathbf{W}_1 \mathbf{x}, \quad \mathbf{a}_1 = \text{ReLU}(\mathbf{z}_1) \quad (\mathbf{W}_1 \in \mathbb{R}^{128 \times 784})$$
-$$\mathbf{z}_2 = \mathbf{W}_2 \mathbf{a}_1, \quad \mathbf{a}_2 = \text{ReLU}(\mathbf{z}_2) \quad (\mathbf{W}_2 \in \mathbb{R}^{64 \times 128})$$
-$$\mathbf{z}_3 = \mathbf{W}_3 \mathbf{a}_2 \quad (\mathbf{W}_3 \in \mathbb{R}^{10 \times 64})$$
-$$\hat{y} = \arg\max_k (\mathbf{z}_3[k])$$
+
+$$
+
+\mathbf{z}_1 = \mathbf{W}_1 \mathbf{x}, \quad \mathbf{a}_1 = \text{ReLU}(\mathbf{z}_1) \quad (\mathbf{W}_1 \in \mathbb{R}^{128 \times 784})
+
+$$
+
+$$
+
+\mathbf{z}_2 = \mathbf{W}_2 \mathbf{a}_1, \quad \mathbf{a}_2 = \text{ReLU}(\mathbf{z}_2) \quad (\mathbf{W}_2 \in \mathbb{R}^{64 \times 128})
+
+$$
+
+$$
+
+\mathbf{z}_3 = \mathbf{W}_3 \mathbf{a}_2 \quad (\mathbf{W}_3 \in \mathbb{R}^{10 \times 64})
+
+$$
+
+$$
+
+\hat{y} = \arg\max_k (\mathbf{z}_3[k])
+
+$$
 
 - **Pruning Rationale:** Omitting the bias vector $\mathbf{b} \in \mathbb{R}^M$ eliminates 202 addition operations per inference and avoids dedicated BRAM/LUT storage registers with zero accuracy penalty (97.76% accuracy achieved on MNIST).
 - **Activation Pruning:** ReLU is evaluated purely by checking the sign-bit ($x[\text{MSB}] == 0$).
@@ -62,7 +82,11 @@ To avoid floating-point hardware without sacrificing precision:
 - **Weights ($\mathbf{W}$):** Scaled by $S_{\text{w}} = 2^{14} = 16384$ (14 fractional bits, range $[-2, +2)$).
 - **Multiplier Products ($\mathbf{p} = \mathbf{x} \cdot \mathbf{W}$):** Accumulate at scale $S_{\text{prod}} = S_{\text{act}} \times S_{\text{w}} = 2^{24}$.
 - **Midpoint Rescaling:** Products are rescaled back to $S_{\text{act}} = 2^{10}$ using an arithmetic right-shift with midpoint rounding:
-  $$\mathbf{a}_{\text{rescaled}} = \left\lfloor \frac{\mathbf{z} + 2^{13}}{2^{14}} \right\rfloor = (\mathbf{z} + 8192) \gg 14$$
+  $$
+
+\mathbf{a}_{\text{rescaled}} = \left\lfloor \frac{\mathbf{z} + 2^{13}}{2^{14}} \right\rfloor = (\mathbf{z} + 8192) \gg 14
+
+$$
 
 ---
 
@@ -102,9 +126,9 @@ graph TD
 
 ### 4.1 Time-Division Multiplexed (TDM) Execution Core
 Instead of unrolling separate hardware for each layer, a single **16-way SIMD MAC core** is time-shared across all three layers:
-- **Layer 1 ($784 \to 128$):** Evaluates 128 neurons. Each neuron consumes 49 blocks of 16 inputs $\to 6,272$ compute cycles.
-- **Layer 2 ($128 \to 64$):** Evaluates 64 neurons. Each neuron consumes 8 blocks of 16 inputs $\to 512$ compute cycles.
-- **Layer 3 ($64 \to 10$):** Evaluates 10 output classes. Each class consumes 4 blocks of 16 inputs $\to 40$ compute cycles.
+- **Layer 1 (${784 \to 128}$):** Evaluates 128 neurons. Each neuron consumes 49 blocks of 16 inputs $\to 6,272$ compute cycles.
+- **Layer 2 (${128 \to 64}$):** Evaluates 64 neurons. Each neuron consumes 8 blocks of 16 inputs $\to 512$ compute cycles.
+- **Layer 3 (${64 \to 10}$):** Evaluates 10 output classes. Each class consumes 4 blocks of 16 inputs $\to 40$ compute cycles.
 
 ### 4.2 On-Chip Memory Organization & Conflict-Free Partitioning
 Vivado HLS 2018.3 experiences multiplexer explosions when indexing flat 2D arrays across unrolled loops. The weights and activation buffers were structured as 3D block-aligned arrays:
@@ -162,17 +186,17 @@ graph LR
 2. **Background Inversion:** Detects paper corners; inverts ink ($Y_{\text{inv}} = 255 - Y$).
 3. **Otsu Thresholding:** Automatically separates stroke contours from lighting gradients and paper shadows.
 4. **Bounding Box Isolation:** Crops digit bounding box $[x_{\min}, y_{\min}, x_{\max}, y_{\max}]$.
-5. **Aspect-Ratio Preserved Rescaling:** Fits cropped stroke into a $20\times 20$ box via bicubic interpolation.
-6. **Center-of-Mass Alignment:** Translates center of mass $(\bar{y}, \bar{x})$ to canvas center $(14, 14)$ on a $28\times 28$ grid.
+5. **Aspect-Ratio Preserved Rescaling:** Fits cropped stroke into a ${20\times 20}$ box via bicubic interpolation.
+6. **Center-of-Mass Alignment:** Translates center of mass $(\bar{y}, \bar{x})$ to canvas center $(14, 14)$ on a ${28\times 28}$ grid.
 
 ### 6.2 Empirical Robustness Across Test Cohorts
 | Test Cohort | Sample Size | Accuracy (%) | Degradation vs MNIST | Avg Hardware Confidence |
 | :--- | :---: | :---: | :---: | :---: |
-| **Standard MNIST (Ref)** | 10,000 | **97.76%** | $0.00\%$ | High |
-| **Cohort 1 (Clean Handwriting)** | 30 | **100.00%** | $+2.24\%$ | $6,961.8$ |
-| **Cohort 2 (Shadows & Lighting)**| 30 | **90.00%** | $-7.76\%$ | $7,370.9$ |
-| **Cohort 3 (Noise & Grain)** | 30 | **86.67%** | $-11.09\%$ | $3,594.7$ |
-| **Cohort 4 (Blank / Negative Controls)** | 10 | **100.00%** (Rejection) | N/A | $70.4$ |
+| **Standard MNIST (Ref)** | 10,000 | **97.76%** | 0.00% | High |
+| **Cohort 1 (Clean Handwriting)** | 30 | **100.00%** | +2.24% | 6,961.8 |
+| **Cohort 2 (Shadows & Lighting)**| 30 | **90.00%** | -7.76% | 7,370.9 |
+| **Cohort 3 (Noise & Grain)** | 30 | **86.67%** | -11.09% | 3,594.7 |
+| **Cohort 4 (Blank / Negative Controls)** | 10 | **100.00%** (Rejection) | N/A | 70.4 |
 
 ---
 

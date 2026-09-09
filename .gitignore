@@ -8,6 +8,7 @@
 **/.autopilot/
 **/impl/
 **/syn/
+first_test/test/
 vivado_hls.app
 *.log
 *.jou

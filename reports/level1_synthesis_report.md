@@ -16,10 +16,10 @@
 
 ## 1. Executive Summary & Top-Level Specifications
 
-This report provides the architectural specification, microarchitectural implementation details, RTL hardware reuse proof, and complete FPGA synthesis results for the **784-64-10 Multi-Layer Perceptron (MLP)** intelligent chip hardware accelerator. Designed strictly to satisfy the Level 1 requirements of `hw/智能芯片选题任务书2026.md` and the team division plan in `hw/智能芯片实践分工.md`, the accelerator executes real-time inference on $28 \times 28$ grayscale handwritten digits.
+This report provides the architectural specification, microarchitectural implementation details, RTL hardware reuse proof, and complete FPGA synthesis results for the **784-64-10 Multi-Layer Perceptron (MLP)** intelligent chip hardware accelerator. Designed strictly to satisfy the Level 1 requirements of `hw/智能芯片选题任务书2026.md` and the team division plan in `hw/智能芯片实践分工.md`, the accelerator executes real-time inference on ${28 \times 28}$ grayscale handwritten digits.
 
 ### 1.1 Key Technical Highlights
-- **Topology**: Fully connected neural network: $784 \text{ inputs} \to 64 \text{ hidden neurons (ReLU)} \to 10 \text{ output neurons (Linear Logits)} \to \text{Argmax Classifier}$. Eliminates all bias vectors ($b \equiv 0$) without accuracy degradation, saving 74 storage words and simplifying accumulator paths.
+- **Topology**: Fully connected neural network: ${784 \text{ inputs} \to 64 \text{ hidden neurons (ReLU)} \to 10 \text{ output neurons (Linear Logits)} \to \text{Argmax Classifier}}$. Eliminates all bias vectors ($b \equiv 0$) without accuracy degradation, saving 74 storage words and simplifying accumulator paths.
 - **Fixed-Point Numerical Representation**: Fully bit-accurate `ap_fixed<11, 3, AP_RND, AP_SAT>` numerical format across all activations and frozen weights (matching `hw/weights.h`). Intermediate accumulation utilizes `ap_fixed<24, 8, AP_RND, AP_SAT>` to guarantee zero intermediate overflow over 784-term inner products.
 - **Microarchitecture (TDM SIMD MAC Reuse)**: A single, non-inlined 16-way SIMD Multiply-Accumulate (`simd_mac16`) core executes both Fully-Connected Layer 1 (FC1: 49 chunks $\times$ 64 neurons = 3,136 cycles) and Layer 2 (FC2: 4 chunks $\times$ 10 classes = 40 cycles) via a 6-state Time-Division Multiplexed (TDM) Finite State Machine (FSM).
 - **Physical Synthesis PPA (XC7Z020 @ 100 MHz)**:
@@ -28,7 +28,7 @@ This report provides the architectural specification, microarchitectural impleme
   - **DSP48E1 Blocks**: 16 / 220 (7.27%) — *exactly 16 DSPs, proving 100% hardware reuse without duplication*
   - **BRAM_18K**: 2 / 140 (1.43%)
   - **Worst Negative Slack (WNS)**: **+2.45 ns** at 10.0 ns target clock ($F_{\text{max}} = 132.45 \text{ MHz}$)
-  - **Inference Latency**: **3,176 compute cycles** ($31.76 \ \mu\text{s}$ at 100 MHz, yielding $\approx 31,446 \text{ inferences/sec}$)
+  - **Inference Latency**: **3,176 compute cycles** (31.76 µs at 100 MHz, yielding $\approx 31,446$ inferences/sec)
   - **Classification Accuracy**: **97.00%** baseline verification on standard MNIST (`hw/test_inputs.h`).
 
 ---
@@ -125,7 +125,7 @@ The accelerator follows a strictly decoupled architecture comprising an **AXI4-L
 1. **Activation & Weight Type (`custom_data_t`)**:
    - `ap_fixed<11, 3, AP_RND, AP_SAT>`
    - Total bits: $W = 11$, Integer bits: $I = 3$ (1 sign bit + 2 magnitude integer bits), Fractional bits: $F = 8$.
-   - Scale factor: $2^8 = 256$. Step size $\Delta = 2^{-8} = 0.00390625$.
+   - Scale factor: ${2^8 = 256}$. Step size $\Delta = 2^{-8} = 0.00390625$.
    - Representable dynamic range: $[-4.0, +3.99609375]$.
    - Saturation mode: Symmetric saturation (`AP_SAT`) on boundary clipping.
    - Rounding mode: Round to nearest even (`AP_RND`) minimizing DC quantization bias.
@@ -133,9 +133,9 @@ The accelerator follows a strictly decoupled architecture comprising an **AXI4-L
    - `ap_fixed<24, 8, AP_RND, AP_SAT>`
    - Total bits: 24, Integer bits: 8, Fractional bits: 16.
    - Dynamic range: $[-128.0, +127.9999847]$.
-   - Multiplier product dynamic range: $11\text{b} \times 11\text{b} \to 22\text{b}$ ($I_{\text{prod}} = 6, F_{\text{prod}} = 16$).
+   - Multiplier product dynamic range: ${11\text{b} \times 11\text{b} \to 22\text{b}}$ ($I_{\text{prod}} = 6, F_{\text{prod}} = 16$).
    - 784-term accumulation maximum theoretical growth: $\log_2(784) = 9.61 \text{ bits}$.
-   - Given normalized input bounds $[0.0, 1.0]$ and bounded weights $[-1.0, 0.68]$, worst-case accumulator value is $< 32.0$. An 8-bit integer field provides **$+12 \text{ dB}$ of headroom**, guaranteeing zero arithmetic saturation during intermediate MAC operations.
+   - Given normalized input bounds $[0.0, 1.0]$ and bounded weights $[-1.0, 0.68]$, worst-case accumulator value is < 32.0. An 8-bit integer field provides **+12 dB of headroom**, guaranteeing zero arithmetic saturation during intermediate MAC operations.
 
 ### 3.2 16-Way SIMD MAC Core (`simd_mac16`)
 The compute core executes a 16-dimensional vector dot product and accumulates the reduction sum into an accumulator register:
@@ -159,7 +159,12 @@ void simd_mac16(
 
 ### 3.3 Sign-Bit ReLU Activation
 The non-linear activation for FC1 hidden layer is implemented via direct sign-bit inspection:
-$$f(z) = \begin{cases} z, & \text{if } z \ge 0 \ (z[\text{MSB}] = 0) \\ 0, & \text{if } z < 0 \ (z[\text{MSB}] = 1) \end{cases}$$
+$$
+f(z) = \begin{cases} 
+z, & \text{if } z \ge 0 \quad (z[\text{MSB}] = 0) \\ 
+0, & \text{if } z \lt 0 \quad (z[\text{MSB}] = 1) 
+\end{cases}
+$$
 Because $f(z)$ checks the MSB sign bit of `acc`, the operation is implemented in combinational LUTs with **0 cycle pipeline latency** and zero DSP overhead.
 
 ### 3.4 10-Way Parallel Argmax Classifier
@@ -214,9 +219,9 @@ The accelerator controller is modeled as a deterministic Finite State Machine wi
 
 1. **State `IDLE`**: Waits for host trigger (`ap_start = 1`) via AXI4-Lite control bus. Initializes internal address pointers.
 2. **State `LOAD_INP`**: Reads 784 input image pixels from AXI memory space into on-chip buffer `in_buf`. Pipelined at Initiation Interval $\text{II} = 1$ (784 cycles).
-3. **State `CALC_FC1`**: Computes FC1 ($784 \to 64$). For each neuron $n \in [0, 63]$, the 784 input vector is consumed in 49 sequential 16-element chunks ($b = 0 \dots 48$). The 16 weights are fetched in parallel from ROM `weights_L1` and fed to `simd_mac16`.
+3. **State `CALC_FC1`**: Computes FC1 (${784 \to 64}$). For each neuron $n \in [0, 63]$, the 784 input vector is consumed in 49 sequential 16-element chunks ($b = 0 \dots 48$). The 16 weights are fetched in parallel from ROM `weights_L1` and fed to `simd_mac16`.
 4. **State `RELU`**: Evaluates sign-bit ReLU on the accumulated 24-bit sum, casts to `custom_data_t`, and stores result into `l1_act[n]`.
-5. **State `CALC_FC2`**: Computes FC2 ($64 \to 10$). Reuses the **exact same `simd_mac16` core**. For each class $c \in [0, 9]$, the 64 hidden activations are consumed in 4 sequential 16-element chunks ($b = 0 \dots 3$). The 16 weights are fetched from ROM `weights_L2`.
+5. **State `CALC_FC2`**: Computes FC2 (${64 \to 10}$). Reuses the **exact same `simd_mac16` core**. For each class $c \in [0, 9]$, the 64 hidden activations are consumed in 4 sequential 16-element chunks ($b = 0 \dots 3$). The 16 weights are fetched from ROM `weights_L2`.
 6. **State `ARGMAX`**: Evaluates 10 logits in parallel, determines `best_digit`.
 7. **State `DONE`**: Asserts `ap_done` and `ap_idle`, drives `pred_digit` to AXI register `0x18`, and returns to `IDLE`.
 
@@ -231,12 +236,12 @@ The cycle budget is strictly deterministic:
 | **Layer 2 Matrix-Vector (`CALC_FC2`)** | 16-MAC dot-product chunks | 10 classes $\times 4$ chunks | **40** |
 | **Classification (`ARGMAX`)** | Parallel tree comparator | 1 cycle | 1 |
 | **State Transitions & Flushes** | FSM handshake, pipeline drain | Overhead | 15 |
-| **Total Dedicated SIMD Compute Cycles** | `CALC_FC1` + `CALC_FC2` | $3,136 + 40$ | **3,176 cycles** |
+| **Total Dedicated SIMD Compute Cycles** | `CALC_FC1` + `CALC_FC2` | ${3,136 + 40}$ | **3,176 cycles** |
 | **Total End-to-End Latency** | Full frame inference (AXI in to result out) | Including load & FSM | **3,976 cycles** |
 
 At $F_{\text{clk}} = 100 \text{ MHz}$ ($T_{\text{clk}} = 10.0 \text{ ns}$):
-- Pure SIMD compute latency: $3,176 \times 10.0 \text{ ns} = \mathbf{31.76 \ \mu\text{s}}$
-- Pipelined frame throughput: $\approx \mathbf{31,446 \text{ frames/second}}$ (sufficient for high-speed industrial inspection cameras).
+- Pure SIMD compute latency: ${3,176 \times 10.0 \text{ ns} = \mathbf{31.76 \ \mu\text{s}}}$
+- Pipelined frame throughput: $\approx$ **31,446 frames/second** (sufficient for high-speed industrial inspection cameras).
 
 ---
 
@@ -247,7 +252,7 @@ A core requirement of Level 1 (`hw/智能芯片选题任务书2026.md:21-22`) is
 ### 5.1 The Role of `#pragma HLS INLINE OFF`
 In Vivado HLS, function calls inside pipelined loops are automatically inlined by default to maximize loop-level scheduling freedom. If inlined:
 - Vivado HLS would synthesize 16 multipliers for the `FC1_CHUNKS` loop and another 16 multipliers for the `FC2_CHUNKS` loop.
-- The resulting design would consume $16 + 16 = 32 \text{ DSP48E1}$ slices, violating the time-division multiplexing requirement.
+- The resulting design would consume ${16 + 16 = 32 \text{ DSP48E1}}$ slices, violating the time-division multiplexing requirement.
 
 By explicitly inserting:
 ```cpp
@@ -275,7 +280,9 @@ Inspection of the synthesized RTL and synthesis report confirms:
           +--- mul_11s_11s_22_1_1_U16 (DSP48E1)
    ```
 3. **Reuse Factor**:
-   $$\text{Hardware Reuse Factor} = \frac{\text{Virtual SIMD Ops}}{\text{Physical SIMD Units}} = \frac{3,136 + 40}{16 \text{ units} \times 1 \text{ cycle}} = \mathbf{198.5\times \text{ temporal reuse}}$$
+   $$
+\text{Hardware Reuse Factor} = \frac{\text{Virtual SIMD Ops}}{\text{Physical SIMD Units}} = \frac{3,136 + 40}{16 \text{ units} \times 1 \text{ cycle}} = \mathbf{198.5\times \text{ temporal reuse}}
+$$
 This formally establishes complete compliance with the Level 1 hardware reuse mandate.
 
 ---
@@ -285,7 +292,7 @@ This formally establishes complete compliance with the Level 1 hardware reuse ma
 To sustain an Initiation Interval of $\text{II} = 1$ in both `FC1_CHUNKS` and `FC2_CHUNKS`, 16 input activations and 16 weights must be fetched simultaneously in a single clock cycle without BRAM port contention.
 
 ### 6.1 Dual-Port BRAM Limitations
-A standard Xilinx True Dual-Port Block RAM provides only 2 read ports per clock cycle. Attempting to read 16 words from an unpartitioned BRAM forces Vivado HLS to serialize the reads over $\lceil 16 / 2 \rceil = 8$ cycles, resulting in $\text{II} = 8$ and reducing compute throughput by $8\times$.
+A standard Xilinx True Dual-Port Block RAM provides only 2 read ports per clock cycle. Attempting to read 16 words from an unpartitioned BRAM forces Vivado HLS to serialize the reads over $\lceil 16 / 2 \rceil = 8$ cycles, resulting in $\text{II} = 8$ and reducing compute throughput by 8×.
 
 ### 6.2 Array Partitioning Solution
 We resolve this memory bottleneck using systematic cyclic array partitioning:
@@ -302,12 +309,16 @@ custom_data_t l2_logits[OUTPUT_NODES];
 
 ### 6.3 Mathematical Proof of Conflict-Free Access
 For any SIMD block index $b$ and lane index $k \in [0, 15]$, the global memory address accessed is:
-$$\text{Addr}(b, k) = b \cdot 16 + k$$
+$$
+\text{Addr}(b, k) = b \cdot 16 + k
+$$
 Under cyclic partitioning with factor $P = 16$, memory element $\text{Addr}$ is mapped to physical bank ID:
-$$\text{BankID}(\text{Addr}) = \text{Addr} \pmod{16} = (b \cdot 16 + k) \pmod{16} = k$$
+$$
+\text{BankID}(\text{Addr}) = \text{Addr} \pmod{16} = (b \cdot 16 + k) \pmod{16} = k
+$$
 Because $\text{BankID}(\text{Addr}(b, k)) = k$, each of the 16 parallel SIMD lanes accesses a **distinct physical memory bank $k$** for all chunks $b$.
 - Zero bank collisions occur.
-- Memory bandwidth = $16 \text{ words} \times 11 \text{ bits} \times 100 \text{ MHz} = \mathbf{17.6 \text{ Gbps}}$.
+- Memory bandwidth = ${16 \text{ words} \times 11 \text{ bits} \times 100 \text{ MHz} = \mathbf{17.6 \text{ Gbps}}}$.
 - Sustains $\text{II} = 1$ deterministically across all compute loops.
 
 ---
@@ -325,17 +336,19 @@ The design was synthesized using Vivado HLS targeting the commercial-grade Xilin
 | **Arithmetic DSP** | **DSP48E1 Slices** | 220 | **16** | **7.27%** | PASSED ($\le 32$ limit, 100% reuse) |
 | **Memory Storage** | **BRAM_18K Blocks** | 140 | **2** | **1.43%** | PASSED ($\le 8$ limit) |
 | **Timing Closure** | **Target Clock Period** | 10.000 ns | 10.000 ns | 100.0 MHz | PASSED |
-| | **Achieved Clock Period** | — | **7.550 ns** | **132.45 MHz** | PASSED ($F_{\text{max}} > 100 \text{ MHz}$) |
+| | **Achieved Clock Period** | — | **7.550 ns** | **132.45 MHz** | PASSED ($F_{\text{max}} \gt 100 \text{ MHz}$) |
 | | **Worst Negative Slack (WNS)**| — | **+2.450 ns** | — | **PASSED (Positive Margin)** |
 | **Performance** | **Compute Latency (Cycles)** | — | **3,176** | — | Fully Deterministic |
-| | **Compute Latency ($\mu$s)** | — | **31.76 $\mu$s** | — | Real-time classification |
+| | **Compute Latency ($\mu$s)** | — | **31.76 µs** | — | Real-time classification |
 | | **Initiation Interval (II)** | — | **1** | — | Optimal pipelining |
 | | **Peak Inference Throughput** | — | **31,446 FPS**| — | Exceeds camera frame rates |
 
 ### 7.2 Critical Path Analysis
 The critical timing path originates from the AXI-Lite registered memory bank through the 11-bit multiplier input registers, traverses the 4-stage binary adder tree, and terminates at the 24-bit accumulator register:
-$$\text{Delay}_{\text{crit}} = T_{\text{clk-q}}(\text{DSP}) + T_{\text{tree}}(\text{LUT adders}) + T_{\text{accum}} + T_{\text{setup}} = 7.550 \text{ ns} < 10.000 \text{ ns}$$
-The positive slack of **$+2.450 \text{ ns}$** provides a comfortable $24.5\%$ timing margin, preventing setup violations across process, voltage, and temperature (PVT) variations.
+$$
+\text{Delay}_{\text{crit}} = T_{\text{clk-q}}(\text{DSP}) + T_{\text{tree}}(\text{LUT adders}) + T_{\text{accum}} + T_{\text{setup}} = 7.550 \text{ ns} \lt 10.000 \text{ ns}
+$$
+The positive slack of **$+2.450 \text{ ns}$** provides a comfortable 24.5% timing margin, preventing setup violations across process, voltage, and temperature (PVT) variations.
 
 ---
 
@@ -359,4 +372,4 @@ The Level 1 synthesizable 784-64-10 MLP hardware accelerator successfully meets 
 2. Verified operator reuse via `#pragma HLS INLINE OFF`, instantiating exactly 16 DSPs for both FC1 and FC2.
 3. Conflict-free cyclic memory partitioning achieving $\text{II} = 1$.
 4. Robust timing closure at 100 MHz with $+2.45 \text{ ns}$ slack on Xilinx XC7Z020.
-5. High-efficiency resource footprint occupying under $4\%$ of FPGA fabric, leaving abundant headroom for integration with camera controllers and real-world image preprocessors.
+5. High-efficiency resource footprint occupying under 4% of FPGA fabric, leaving abundant headroom for integration with camera controllers and real-world image preprocessors.

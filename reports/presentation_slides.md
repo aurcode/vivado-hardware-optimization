@@ -11,12 +11,12 @@
 ## Slide 1: Title & Project Overview
 
 ### High-Efficiency 784-64-10 MLP Neural Accelerator on Xilinx Zynq-7000
-- **Core Mission**: Design, synthesize, verify, and benchmark an edge neural network accelerator for handwritten digit recognition ($28 \times 28$ grayscale images) under strict FPGA resource constraints.
+- **Core Mission**: Design, synthesize, verify, and benchmark an edge neural network accelerator for handwritten digit recognition (${28 \times 28}$ grayscale images) under strict FPGA resource constraints.
 - **Target Device**: Xilinx Zynq-7000 All-Programmable SoC (`xc7z020clg400-1`), 100 MHz target clock.
 - **Design Philosophy**: Strict separation of Datapath and Controller; Time-Division Multiplexed (TDM) hardware reuse; conflict-free on-chip memory access; bit-accurate quantization.
 - **Key Results**:
-  - **Level 1**: Timing closed with $+2.45 \text{ ns}$ slack at 100 MHz; 16 DSPs with 100% operator reuse; 2,100 LUTs ($3.95\%$); $31.8 \ \mu\text{s}$ latency ($31,446 \text{ FPS}$).
-  - **Level 2**: 7-step real-world preprocessing pipeline; 100-sample cohort benchmark; $100.0\%$ noise rejection.
+  - **Level 1**: Timing closed with $+2.45 \text{ ns}$ slack at 100 MHz; 16 DSPs with 100% operator reuse; 2,100 LUTs (3.95%); 31.8 µs latency (31,446 FPS).
+  - **Level 2**: 7-step real-world preprocessing pipeline; 100-sample cohort benchmark; 100.0% noise rejection.
   - **Level 3**: Multi-tier PTQ sweep; formal mathematical proof of 11-bit saturation knee point; Pareto frontier optimization.
 
 > **Speaker Notes (Role A - Lead Architect)**:  
@@ -48,10 +48,10 @@
 
 ### Network Topology & Bias-Free Formulation
 - **Layer 1 (FC1)**: 784 Inputs $\to$ 64 Hidden Neurons $\to$ ReLU Activation Function.
-  - Weight Matrix $W_1 \in \mathbb{R}^{64 \times 784}$ ($50,176$ parameters).
+  - Weight Matrix $W_1 \in \mathbb{R}^{64 \times 784}$ (50,176 parameters).
   - Formulation: $a_1 = \max(0, W_1 \cdot X)$.
 - **Layer 2 (FC2)**: 64 Hidden Neurons $\to$ 10 Output Neurons $\to$ Linear Logits.
-  - Weight Matrix $W_2 \in \mathbb{R}^{10 \times 64}$ ($640$ parameters).
+  - Weight Matrix $W_2 \in \mathbb{R}^{10 \times 64}$ (640 parameters).
   - Formulation: $z_2 = W_2 \cdot a_1$.
 - **Output Layer**: 10-Class Argmax Classifier: $d^* = \arg\max_{c \in [0, 9]} \{ z_{2, c} \}$.
 - **Why Eliminate Biases ($b \equiv 0$)?**
@@ -93,14 +93,14 @@
 - **Operand Type (`custom_data_t`)**: `ap_fixed<11, 3, AP_RND, AP_SAT>`
   - Total Wordlength ($W$): 11 bits.
   - Integer Field ($I$): 3 bits (1 sign bit + 2 magnitude bits).
-  - Fractional Field ($F$): 8 bits (Q3.8 format, scale factor $2^8 = 256$).
-  - Resolution Step ($\Delta$): $2^{-8} = 1/256 = 0.00390625$.
+  - Fractional Field ($F$): 8 bits (Q3.8 format, scale factor ${2^8 = 256}$).
+  - Resolution Step ($\Delta$): ${2^{-8} = 1/256 = 0.00390625}$.
   - Dynamic Range: $[-4.0, +3.99609375]$.
   - Statistical Fit: Measured weights lie strictly within $[-1.000, +0.676]$ and inputs in $[0.0, 1.0]$. Zero clipping occurs during normal execution.
 - **Accumulator Type (`acc_t`)**: `ap_fixed<24, 8, AP_RND, AP_SAT>`
   - Multiplier output generates up to 22 bits ($I_{\text{prod}} = 6, F_{\text{prod}} = 16$).
   - 784-term accumulation theoretical bit growth: $\log_2(784) \approx 9.61 \text{ bits}$.
-  - An 8-bit integer field supports values up to $\pm 128.0$, providing **$+12 \text{ dB}$ of headroom** over the maximum observed inner product ($< 32.0$). Guarantees zero arithmetic saturation during dot-product reduction.
+  - An 8-bit integer field supports values up to $\pm 128.0$, providing **$+12 \text{ dB}$ of headroom** over the maximum observed inner product (< 32.0). Guarantees zero arithmetic saturation during dot-product reduction.
 
 > **Speaker Notes (Role C - Quantization Engineer)**:  
 > "In Slide 4, we define our numerical format. An 11-bit wordlength with 3 integer bits provides a dynamic range of negative 4.0 to positive 3.996. Our weight statistics show maximum values under 1.0, meaning the 11-bit type fits weights perfectly with zero clipping. In the accumulator, we allocate 24 bits with 8 integer bits, guaranteeing zero saturation during the 784-term accumulation."
@@ -159,8 +159,8 @@
 ### Time-Division Multiplexed Hardware Reuse
 - **State Flow**: `IDLE` $\to$ `LOAD_INP` $\to$ `CALC_FC1` $\to$ `RELU` $\to$ `CALC_FC2` $\to$ `ARGMAX` $\to$ `DONE`.
 - **Hardware Reuse Proof**:
-  - FC1 requires $64 \times 49 = 3,136$ SIMD operations.
-  - FC2 requires $10 \times 4 = 40$ SIMD operations.
+  - FC1 requires ${64 \times 49 = 3,136}$ SIMD operations.
+  - FC2 requires ${10 \times 4 = 40}$ SIMD operations.
   - Both layers sequentially time-share the **single instance** of `simd_mac16`.
   - `#pragma HLS INLINE OFF` creates a dedicated RTL module `simd_mac16.v`.
   - Synthesis report confirms **exactly 16 DSP48E1 blocks** instantiated in the entire chip.
@@ -211,7 +211,7 @@
 ## Slide 7: Memory Hierarchy & Conflict-Free Array Partitioning
 
 ### Eliminating BRAM Port Contention to Achieve II = 1
-- **The Memory Bottleneck**: A standard Dual-Port Block RAM provides only 2 read ports per clock cycle. Fetching 16 operands from unpartitioned BRAM requires 8 clock cycles ($\text{II} = 8$), reducing throughput by $8\times$.
+- **The Memory Bottleneck**: A standard Dual-Port Block RAM provides only 2 read ports per clock cycle. Fetching 16 operands from unpartitioned BRAM requires 8 clock cycles ($\text{II} = 8$), reducing throughput by 8×.
 - **Cyclic Array Partitioning Solution**:
   ```cpp
   custom_data_t in_buf[INPUT_NODES];
@@ -221,10 +221,15 @@
   #pragma HLS ARRAY_PARTITION variable=l1_act cyclic factor=16 dim=1
   ```
 - **Conflict-Free Proof**: For chunk $b$ and lane $k \in [0, 15]$:
-  $$\text{BankID}(\text{Addr}) = (b \cdot 16 + k) \pmod{16} = k$$
+  $$
+
+\text{BankID}(\text{Addr}) = (b \cdot 16 + k) \pmod{16} = k
+
+$$
+
   All 16 parallel SIMD lanes access **independent physical memory banks** simultaneously in every cycle.
   - Zero bank contention.
-  - Sustained memory bandwidth: **$17.6 \text{ Gbps}$**.
+  - Sustained memory bandwidth: **17.6 Gbps**.
   - Initiation Interval: strictly $\mathbf{II = 1}$.
 
 > **Speaker Notes (Role E - Storage & Control Engineer)**:  
@@ -243,9 +248,9 @@
 | **DSP48E1 Slices** | 220 | **16** | **7.27%** | $\le 32$ | **PASSED (100% Reuse)** |
 | **BRAM_18K Blocks** | 140 | **2** | **1.43%** | $\le 8$ | **PASSED** |
 | **Target Clock Period** | 10.000 ns | 10.000 ns | 100.0 MHz | 100 MHz | **PASSED** |
-| **Achieved Clock Period** | — | **7.550 ns** | **132.45 MHz** | $< 10.0 \text{ ns}$ | **PASSED** |
+| **Achieved Clock Period** | — | **7.550 ns** | **132.45 MHz** | < 10.0 ns | **PASSED** |
 | **Worst Negative Slack (WNS)**| — | **+2.450 ns** | — | $\ge 0.0 \text{ ns}$ | **PASSED (+24.5% Margin)** |
-| **SIMD Compute Latency** | — | **3,176 cycles** | **31.76 $\mu$s** | $< 100 \ \mu\text{s}$ | **PASSED** |
+| **SIMD Compute Latency** | — | **3,176 cycles** | **31.76 µs** | < 100 µs | **PASSED** |
 | **Peak Throughput** | — | **31,446 FPS** | — | Real-Time | **PASSED** |
 
 > **Speaker Notes (Role H - Synthesis & Performance Engineer)**:  
@@ -260,7 +265,7 @@
 - **Tier 2: Boundary & Corner Cases (110 Tests)**: Dynamic range saturation, zero inputs, maximum activation overflow, tie-breaking logits.
 - **Tier 3: Cross-Feature Interactions (10 Tests)**: End-to-end integration from 7-step preprocessed image arrays into hardware datapath; noise rejection handshake.
 - **Tier 4: Real-World Workloads (6 Tests)**: Full batch evaluation on 100 real-world photo cohorts.
-- **Regression Result**: **236 / 236 Tests Passed (100.00% Success Rate)** with 0 failures in $31.16 \text{ s}$.
+- **Regression Result**: **236 / 236 Tests Passed (100.00% Success Rate)** with 0 failures in 31.16 s.
 - **C/RTL Co-Simulation**: Automated Verilog co-simulation verified cycle-accurate bit-matching against C simulation across all 100 test vectors with **zero mismatches**.
 
 > **Speaker Notes (Role F - Verification Engineer)**:  
@@ -271,8 +276,8 @@
 ## Slide 10: Level 2 Real-World Preprocessing Pipeline (7 Steps)
 
 ### Bridging the Mobile Camera Domain Gap
-- **Input**: Raw smartphone photos ($1920 \times 1080$ RGB, unconstrained lighting, pens, and paper).
-- **Output**: Standardized $28 \times 28$ normalized vector with fixed-point scale $2^8 = 256$.
+- **Input**: Raw smartphone photos (${1920 \times 1080}$ RGB, unconstrained lighting, pens, and paper).
+- **Output**: Standardized ${28 \times 28}$ normalized vector with fixed-point scale ${2^8 = 256}$.
 
 ```
 [ Raw RGB Image ]
@@ -311,18 +316,18 @@ Step 7: Normalization to [0.0, 1.0] and Fixed-Point Quantization (Scale 256)
 | Dataset / Test Cohort | Sample Size ($N$) | Correct | Accuracy (%) | Domain Gap vs MNIST | Mean Peak Logit |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Standard MNIST Reference** | 100 | 97 | **97.00%** | **0.00% (Baseline)** | **7.60** |
-| **Cohort 1 (Clean Handwriting)** | 30 | 27 | **90.00%** | **$-7.00\%$** | **5.22** |
-| **Cohort 2 (Shadows & Gradients)** | 30 | 24 | **80.00%** | **$-17.00\%$** | **5.40** |
-| **Cohort 3 (Paper Grain & Noise)** | 30 | 25 | **83.33%** | **$-13.67\%$** | **2.44** |
+| **Cohort 1 (Clean Handwriting)** | 30 | 27 | **90.00%** | **-7.00%** | **5.22** |
+| **Cohort 2 (Shadows & Gradients)** | 30 | 24 | **80.00%** | **-17.00%** | **5.40** |
+| **Cohort 3 (Paper Grain & Noise)** | 30 | 25 | **83.33%** | **-13.67%** | **2.44** |
 | **Cohort 4 (Blank/Scratch Controls)**| 10 | 10 (Rej) | **100.00%\*** | **N/A (OOD)** | **0.10** |
-| **Overall Active Handwriting (C1–C3)**| **90** | **76** | **84.44%** | **$-12.56\%$** | **4.35** |
+| **Overall Active Handwriting (C1–C3)**| **90** | **76** | **84.44%** | **-12.56%** | **4.35** |
 
 *\*Cohort 4 indicates Out-of-Distribution background rejection precision.*
 
 - **Dual-Threshold Rejection Gate**:
-  - Preprocessor Energy Gate: Reject if $E_{\text{stroke}} < 8.0$ OR $I_{\max} < 0.20$.
-  - Hardware Logit Gate: Flag OOD if $z_{\max} < \tau_{\text{reject}} = 1.0$.
-  - **Result**: $10/10$ ($100.0\%$) blank controls rejected; $0/90$ valid digits falsely rejected.
+  - Preprocessor Energy Gate: Reject if $E_{\text{stroke}} \lt 8.0$ OR $I_{\max} \lt 0.20$.
+  - Hardware Logit Gate: Flag OOD if $z_{\max} \lt \tau_{\text{reject}} = 1.0$.
+  - **Result**: 10/10 (100.0%) blank controls rejected; 0/90 valid digits falsely rejected.
 
 > **Speaker Notes (Role G - Preprocessing Engineer)**:  
 > "On Slide 11, we report empirical benchmark results across our 100-sample cohort. On clean handwriting, our pipeline achieves 90.00% accuracy. Under lighting shadows and rough paper, accuracy is 80.00% and 83.33%, giving an overall active recognition rate of 84.44%. Furthermore, our dual-threshold noise gate achieves 100% rejection on blank paper and scratches, with zero false rejections on genuine digits."
@@ -352,7 +357,7 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 
 ### Three Primary Domain Gap Drivers:
 1. **Dense Receptive Field Translation Sensitivity**: Without pooling layers, local stroke tilt moves pixels into adjacent inhibitory weights.
-2. **Stroke Width Starvation**: Thin ballpoint pen lines ($1.5 \text{ px}$) carry $58\%$ less signal mass than antialiased MNIST strokes ($3.0 \text{ px}$), dampening logit margins.
+2. **Stroke Width Starvation**: Thin ballpoint pen lines (1.5 px) carry 58% less signal mass than antialiased MNIST strokes (3.0 px), dampening logit margins.
 3. **Digit 9 vs. 3 Confusion**: Straight vertical descender of natural Digit 9 activates the vertical right-edge feature detectors of Digit 3.
 
 > **Speaker Notes (Role B - Algorithm Engineer)**:  
@@ -366,15 +371,15 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 
 | Profile Name | Bits ($W$) | Radix | Accuracy (%) | Marginal Gain | LUTs | DSPs | BRAM | Latency |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **16-bit High-Precision** | 16 | Q3.13 | **98.00%** | $+0.00\%$ | 3,200 | 16 | 4 | 32.4 $\mu$s |
-| **11-bit Baseline (Knee)**| **11** | **Q3.8** | **98.00%** | **Baseline** | **2,100** | **16** | **2** | **31.8 $\mu$s** |
-| **8-bit Compact** | 8 | Q3.5 | **98.00%** | $+0.00\%$ | 1,450 | 8 | 2 | 31.8 $\mu$s |
-| **6-bit Low-Power** | 6 | Q2.4 | **93.00%** | $-5.00\%$ | 1,120 | 8 | 1 | 31.8 $\mu$s |
-| **4-bit Ultra-Edge** | 4 | Q2.2 | **85.00%** | **$-13.00\%$** | 820 | 4 | 1 | 31.8 $\mu$s |
-| **8-bit Parallel-32** | 8 | Q3.5 | **98.00%** | $+0.00\%$ | 2,890 | 16 | 4 | **16.1 $\mu$s** |
+| **16-bit High-Precision** | 16 | Q3.13 | **98.00%** | +0.00% | 3,200 | 16 | 4 | 32.4 µs |
+| **11-bit Baseline (Knee)**| **11** | **Q3.8** | **98.00%** | **Baseline** | **2,100** | **16** | **2** | **31.8 µs** |
+| **8-bit Compact** | 8 | Q3.5 | **98.00%** | +0.00% | 1,450 | 8 | 2 | 31.8 µs |
+| **6-bit Low-Power** | 6 | Q2.4 | **93.00%** | -5.00% | 1,120 | 8 | 1 | 31.8 µs |
+| **4-bit Ultra-Edge** | 4 | Q2.2 | **85.00%** | **-13.00%** | 820 | 4 | 1 | 31.8 µs |
+| **8-bit Parallel-32** | 8 | Q3.5 | **98.00%** | +0.00% | 2,890 | 16 | 4 | **16.1 µs** |
 
-- **Key Takeaway**: 16-bit incurs $52.4\%$ higher LUT utilization and double the BRAMs with **identically zero accuracy gain** ($\Delta \text{Acc} \equiv 0.00\%$).
-- **The Degradation Cliff**: Precision below 8 bits suffers an accuracy drop, crashing to $85.00\%$ at 4 bits (violating the $90\%$ specification).
+- **Key Takeaway**: 16-bit incurs 52.4% higher LUT utilization and double the BRAMs with **identically zero accuracy gain** ($\Delta \text{Acc} \equiv 0.00\%$).
+- **The Degradation Cliff**: Precision below 8 bits suffers an accuracy drop, crashing to 85.00% at 4 bits (violating the 90% specification).
 
 > **Speaker Notes (Role H - Synthesis & DSE Engineer)**:  
 > "In Slide 13, we present our Level 3 Post-Training Quantization sweep. Comparing 16-bit to 11-bit, accuracy is identical at 98.00%, but 11-bit saves 34% of LUTs and 50% of BRAMs. Reducing precision to 8 bits maintains 98.00% accuracy while cutting DSP usage from 16 to 8. However, below 8 bits, accuracy collapses, dropping to 85% at 4 bits."
@@ -387,9 +392,14 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 1. **Widrow Error**: $\sigma_q^2 = \frac{\Delta^2}{12} = \frac{2^{-2F}}{12}$.
 2. **784-D Accumulation**: $\sigma_{z1}^2 = 784 \cdot (\overline{x^2} + \overline{w_1^2}) \cdot \frac{\Delta^2}{12} \implies \sigma_{z1} = 2.7456 \cdot 2^{-F}$.
 3. **Logit Margin & Q-Function**:
-   $$P(\text{flip} \mid \Delta z) = Q\left( \frac{\Delta z}{\sqrt{2}\sigma_{z2}} \right)$$
-   - At $W = 11$ ($F=8, \Delta = 2^{-8}$): $\sqrt{2}\sigma_{z2} = 0.0234 \ll 2.96$ ($10\text{th percentile margin}$).  
-     Ratio is $126.3 \implies Q(126.3) \approx 0$. **Decision flips are mathematically impossible.**
+   $$
+
+P(\text{flip} \mid \Delta z) = Q\left( \frac{\Delta z}{\sqrt{2}\sigma_{z2}} \right)
+
+$$
+
+   - At $W = 11$ ($F=8, \Delta = 2^{-8}$): $\sqrt{2}\sigma_{z2} = 0.0234 \ll 2.96$ (10th percentile margin).  
+     Ratio is ${126.3 \implies Q(126.3) \approx 0}$. **Decision flips are mathematically impossible.**
    - At $W = 4$ ($F=2, \Delta = 0.25$): $\sqrt{2}\sigma_{z2} \approx 1.50 \sim \mathcal{O}(\Delta z)$. Differential noise breaches class margins, causing **catastrophic collapse**.
 
 ### Pareto Dominance
@@ -397,7 +407,7 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 - **Non-Dominated Frontier Points**:
   - **11-bit Baseline**: Accuracy-Optimal ($\text{ADP} = 66,780$).
   - **8-bit Compact**: Area-Optimal ($\text{ADP} = 46,110$, 8 DSPs).
-  - **8-bit Parallel-32**: Throughput-Optimal ($16.1 \ \mu\text{s}$, $62,111 \text{ FPS}$).
+  - **8-bit Parallel-32**: Throughput-Optimal (16.1 µs, 62,111 FPS).
 
 > **Speaker Notes (Role C - Quantization Engineer)**:  
 > "Slide 14 provides our theoretical breakthrough. Using Widrow's noise model, we proved that accumulating quantization errors across 784 dimensions magnifies noise standard deviation by 2.75 times. At 11 bits, the noise is 126 times smaller than the decision margin, making the flip probability virtually zero. At 4 bits, the noise variance crosses the class separation boundary, explaining the accuracy collapse."
@@ -409,14 +419,14 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 ### Practical Engineering Guidance for Zynq-7000 SoC
 - **Primary Recommendation: 11-Bit Baseline (`ap_fixed<11, 3>`)**:
   - Ideal for smart cameras, optical inspection, and medical sensors.
-  - Zero accuracy degradation; occupies only **$3.95\%$ LUTs** and **$7.27\%$ DSPs** on XC7Z020.
-  - Generates real-time classification in **$31.8 \ \mu\text{s}$** ($31,446 \text{ FPS}$).
+  - Zero accuracy degradation; occupies only **3.95% LUTs** and **7.27% DSPs** on XC7Z020.
+  - Generates real-time classification in **31.8 µs** (31,446 FPS).
 - **Alternative for Resource-Constrained Edge IoT: 8-Bit Compact (`ap_fixed<8, 3>`)**:
-  - Cuts DSP utilization by $50\%$ (only 8 DSPs) while maintaining $98.00\%$ accuracy.
+  - Cuts DSP utilization by 50% (only 8 DSPs) while maintaining 98.00% accuracy.
   - Enables multiple parallel accelerators to be packed into low-cost Artix-7 or Spartan-7 devices.
 - **End-to-End System Pipeline on Zynq-7000**:
-  - ARM Cortex-A9 Host: Executes 7-step preprocessing in $1.85 \text{ ms}$.
-  - FPGA Hardware Core: Executes inference in $0.032 \text{ ms}$.
+  - ARM Cortex-A9 Host: Executes 7-step preprocessing in 1.85 ms.
+  - FPGA Hardware Core: Executes inference in 0.032 ms.
   - System Throughput: $\mathbf{526 \text{ frames per second}}$ sustained end-to-end.
 
 > **Speaker Notes (Role A - Lead Architect)**:  
@@ -429,7 +439,7 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 ### Complete Verification & Project Deliverables Index
 - **Synthesizable Core (`hw/mlp_accel.cpp`, `mlp_accel.h`)**: Clean Datapath/Controller split, 16-way SIMD MAC with `#pragma HLS INLINE OFF`, cyclic memory partitioning, timing closed at 100 MHz.
 - **Automated Flow (`hw/Makefile`, `run_hls.tcl`)**: Native `make host-sim` verified, Dockerized Vivado HLS batch synthesis verified.
-- **Real-World Preprocessing (`preprocessing/`)**: 7-step pipeline, 100-sample cohort benchmark, 10x10 confusion matrix, $100\%$ noise rejection.
+- **Real-World Preprocessing (`preprocessing/`)**: 7-step pipeline, 100-sample cohort benchmark, 10x10 confusion matrix, 100% noise rejection.
 - **Quantization & DSE (`dse/`)**: Multi-tier PTQ sweep, mathematical knee point proof, 3 publication plots in `reports/assets/`.
 - **5 Comprehensive Defense Deliverables (`reports/`)**:
   1. `level1_synthesis_report.md` (Level 1 Architecture & Synthesis)
