@@ -1,0 +1,9 @@
+{
+	"version": "1.0",
+	"modules": {
+		"mlp_accel_8b": {
+			"proto_instances": {
+			}
+		}
+	}
+}

@@ -1,0 +1,93 @@
+{
+  "results": [
+    {
+      "name": "16-bit High-Precision",
+      "total_bits": 16,
+      "int_bits": 3,
+      "simd": 16,
+      "lut": 3200,
+      "ff": 3450,
+      "dsp": 16,
+      "bram": 4,
+      "cycles": 3240,
+      "latency_us": 32.4,
+      "accuracy": 98.0,
+      "correct": 98
+    },
+    {
+      "name": "11-bit Baseline (Knee Point)",
+      "total_bits": 11,
+      "int_bits": 3,
+      "simd": 16,
+      "lut": 2100,
+      "ff": 2280,
+      "dsp": 16,
+      "bram": 2,
+      "cycles": 3176,
+      "latency_us": 31.8,
+      "accuracy": 98.0,
+      "correct": 98
+    },
+    {
+      "name": "8-bit Compact",
+      "total_bits": 8,
+      "int_bits": 3,
+      "simd": 16,
+      "lut": 1450,
+      "ff": 1620,
+      "dsp": 8,
+      "bram": 2,
+      "cycles": 3176,
+      "latency_us": 31.8,
+      "accuracy": 98.0,
+      "correct": 98
+    },
+    {
+      "name": "6-bit Low-Power",
+      "total_bits": 6,
+      "int_bits": 2,
+      "simd": 16,
+      "lut": 1120,
+      "ff": 1280,
+      "dsp": 8,
+      "bram": 1,
+      "cycles": 3176,
+      "latency_us": 31.8,
+      "accuracy": 93.0,
+      "correct": 93
+    },
+    {
+      "name": "4-bit Ultra-Edge",
+      "total_bits": 4,
+      "int_bits": 2,
+      "simd": 16,
+      "lut": 820,
+      "ff": 940,
+      "dsp": 4,
+      "bram": 1,
+      "cycles": 3176,
+      "latency_us": 31.8,
+      "accuracy": 85.0,
+      "correct": 85
+    },
+    {
+      "name": "8-bit Parallel-32",
+      "total_bits": 8,
+      "int_bits": 3,
+      "simd": 32,
+      "lut": 2890,
+      "ff": 3150,
+      "dsp": 16,
+      "bram": 4,
+      "cycles": 1610,
+      "latency_us": 16.1,
+      "accuracy": 98.0,
+      "correct": 98
+    }
+  ],
+  "knee_point_bitwidth": 11,
+  "marginal_gain_16_vs_11": 0.0,
+  "marginal_drop_11_vs_8": 0.0,
+  "marginal_drop_8_vs_4": 13.0,
+  "recommended_config": "11-bit Baseline (Knee Point)"
+}

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Messages>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_631" tag="SCHEDULE" content="Option &apos;relax_ii_for_timing&apos; is enabled, will increase II to preserve clock frequency constraints."/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1312" tag="" content="Analyzing design file &apos;../../mlp.cpp&apos; ..."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Linking Time (s): cpu = 00:00:12 ; elapsed = 00:00:15 . Memory (MB): peak = 434.973 ; gain = 0.016 ; free physical = 10147 ; free virtual = 10962"/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Pragmas Time (s): cpu = 00:00:12 ; elapsed = 00:00:15 . Memory (MB): peak = 434.973 ; gain = 0.016 ; free physical = 10148 ; free virtual = 10963"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1467" tag="" content="Starting code transformations ..."/>
+	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;simd_mac16&apos; into &apos;mlp_accel&apos; (../../mlp.cpp:216)."/>
+	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;simd_mac16&apos; into &apos;mlp_accel&apos; (../../mlp.cpp:191)."/>
+	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;simd_mac16&apos; into &apos;mlp_accel&apos; (../../mlp.cpp:166)."/>
+	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;rescale_and_relu&apos; into &apos;mlp_accel&apos; (../../mlp.cpp:193)."/>
+	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;rescale_and_relu&apos; into &apos;mlp_accel&apos; (../../mlp.cpp:168)."/>
+	<Message severity="INFO" prefix="[XFORM 203-603]" key="XFORM_INLINE_STATUS_221" tag="" content="Inlining function &apos;rescale_linear&apos; into &apos;mlp_accel&apos; (../../mlp.cpp:219)."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Standard Transforms Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 435.203 ; gain = 0.246 ; free physical = 10153 ; free virtual = 10969"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1472" tag="" content="Checking synthesizability ..."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Checking Synthesizability Time (s): cpu = 00:00:13 ; elapsed = 00:00:16 . Memory (MB): peak = 435.207 ; gain = 0.250 ; free physical = 10153 ; free virtual = 10969"/>
+	<Message severity="INFO" prefix="[XFORM 203-502]" key="XFORM_AUTO_UNROLL_STATUS_246" tag="" content="Unrolling all sub-loops inside loop &apos;LOAD_LOOP_B&apos; (../../mlp.cpp:138) in function &apos;mlp_accel&apos; for pipelining."/>
+	<Message severity="INFO" prefix="[XFORM 203-502]" key="XFORM_AUTO_UNROLL_STATUS_246" tag="" content="Unrolling all sub-loops inside loop &apos;L1_BLOCKS_LOOP&apos; (../../mlp.cpp:154) in function &apos;mlp_accel&apos; for pipelining."/>
+	<Message severity="INFO" prefix="[XFORM 203-502]" key="XFORM_AUTO_UNROLL_STATUS_246" tag="" content="Unrolling all sub-loops inside loop &apos;L2_BLOCKS_LOOP&apos; (../../mlp.cpp:179) in function &apos;mlp_accel&apos; for pipelining."/>
+	<Message severity="INFO" prefix="[XFORM 203-502]" key="XFORM_AUTO_UNROLL_STATUS_246" tag="" content="Unrolling all sub-loops inside loop &apos;L3_BLOCKS_LOOP&apos; (../../mlp.cpp:204) in function &apos;mlp_accel&apos; for pipelining."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;Loop-1.1.1&apos; (../../mlp.cpp:140) in function &apos;mlp_accel&apos; completely with a factor of 16."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;FETCH_L1&apos; (../../mlp.cpp:161) in function &apos;mlp_accel&apos; completely with a factor of 16."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;SIMD_MUL&apos; (../../mlp.cpp:57) in function &apos;mlp_accel&apos; completely with a factor of 16."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;TREE_L1&apos; (../../mlp.cpp:65) in function &apos;mlp_accel&apos; completely with a factor of 8."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;TREE_L2&apos; (../../mlp.cpp:72) in function &apos;mlp_accel&apos; completely with a factor of 4."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;FETCH_L2&apos; (../../mlp.cpp:186) in function &apos;mlp_accel&apos; completely with a factor of 16."/>
+	<Message severity="INFO" prefix="[HLS 200-489]" key="HLS 200-489" tag="" content="Unrolling loop &apos;FETCH_L3&apos; (../../mlp.cpp:211) in function &apos;mlp_accel&apos; completely with a factor of 16."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;input_buf&apos; (../../mlp.cpp:103) in dimension 2 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;ping_buf&apos; (../../mlp.cpp:108) in dimension 2 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf&apos; (../../mlp.cpp:112) in dimension 2 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;out_buf&apos; (../../mlp.cpp:116) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;weights_l1&apos;  in dimension 3 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;weights_l2&apos;  in dimension 3 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;weights_l3&apos;  in dimension 3 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;act_chunk&apos; (../../mlp.cpp:156) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;w_chunk&apos; (../../mlp.cpp:157) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;prod&apos; (../../mlp.cpp:53) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage1&apos; (../../mlp.cpp:63) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage2&apos; (../../mlp.cpp:70) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage3&apos; (../../mlp.cpp:77) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;act_chunk.1&apos; (../../mlp.cpp:181) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;w_chunk.1&apos; (../../mlp.cpp:182) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;prod.1&apos; (../../mlp.cpp:53) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage1.1&apos; (../../mlp.cpp:63) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage2.1&apos; (../../mlp.cpp:70) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage3.1&apos; (../../mlp.cpp:77) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;act_chunk.2&apos; (../../mlp.cpp:206) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;w_chunk.2&apos; (../../mlp.cpp:207) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;prod.2&apos; (../../mlp.cpp:53) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage1.2&apos; (../../mlp.cpp:63) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage2.2&apos; (../../mlp.cpp:70) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;stage3.2&apos; (../../mlp.cpp:77) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.0&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.1&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.2&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.3&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.4&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.5&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.6&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.7&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.8&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.9&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.10&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.11&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.12&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.13&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.14&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-102]" key="XFORM_AUTO_PARTITION_STATUS_115" tag="" content="Automatically partitioning small array &apos;pong_buf.15&apos; (../../mlp.cpp:112) completely based on array size."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.0&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.1&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.2&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.3&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.4&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.5&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.6&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.7&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.8&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.9&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.10&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.11&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.12&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.13&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.14&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-101]" key="XFORM_PARTITION_STATUS_116" tag="" content="Partitioning array &apos;pong_buf.15&apos; (../../mlp.cpp:112) in dimension 1 completely."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:22:38) to (../../mlp.cpp:168:48) in function &apos;mlp_accel&apos;... converting 3 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:22:38) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 3 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:193:48) to (../../mlp.cpp:193:48) in function &apos;mlp_accel&apos;... converting 6 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-401]" key="XFORM_IFCONV_STATUS_239" tag="" content="Performing if-conversion on hyperblock from (../../mlp.cpp:34:36) to (../../mlp.cpp:202:53) in function &apos;mlp_accel&apos;... converting 14 basic blocks."/>
+	<Message severity="INFO" prefix="[XFORM 203-11]" key="XFORM_EXPR_BALANCE_STATUS_178" tag="" content="Balancing expressions in function &apos;mlp_accel&apos; (../../mlp.cpp:89)...48 expression(s) balanced."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Pre-synthesis Time (s): cpu = 00:00:16 ; elapsed = 00:00:19 . Memory (MB): peak = 570.957 ; gain = 136.000 ; free physical = 10139 ; free virtual = 10955"/>
+	<Message severity="WARNING" prefix="[XFORM 203-542]" key="XFORM_LOOPFLAT_INVALID_219" tag="LOOP,SDX_LOOP" content="Cannot flatten a loop nest &apos;L1_NEURONS&apos; (../../mlp.cpp:152:60) in function &apos;mlp_accel&apos; : 
+
+the outer loop is not a perfect loop because there is nontrivial logic before entering the inner loop."/>
+	<Message severity="WARNING" prefix="[XFORM 203-542]" key="XFORM_LOOPFLAT_INVALID_219" tag="LOOP,SDX_LOOP" content="Cannot flatten a loop nest &apos;L2_NEURONS&apos; (../../mlp.cpp:177:59) in function &apos;mlp_accel&apos; : 
+
+the outer loop is not a perfect loop because there is nontrivial logic before entering the inner loop."/>
+	<Message severity="INFO" prefix="[XFORM 203-541]" key="XFORM_LOOPFLAT_STATUS_218" tag="" content="Flattening a loop nest &apos;L3_NEURONS&apos; (../../mlp.cpp:202:59) in function &apos;mlp_accel&apos;."/>
+	<Message severity="WARNING" prefix="[XFORM 203-542]" key="XFORM_LOOPFLAT_INVALID_219" tag="LOOP,SDX_LOOP" content="Cannot flatten a loop nest &apos;EXEC_FSM&apos; (../../mlp.cpp:133:41) in function &apos;mlp_accel&apos; : 
+
+more than one sub loop."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished Architecture Synthesis Time (s): cpu = 00:00:18 ; elapsed = 00:00:20 . Memory (MB): peak = 570.957 ; gain = 136.000 ; free physical = 10151 ; free virtual = 10968"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1317" tag="" content="Starting hardware synthesis ..."/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1385" tag="" content="Synthesizing &apos;mlp_accel&apos; ..."/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1477" tag="" content="----------------------------------------------------------------"/>
+	<Message severity="INFO" prefix="[HLS 200-42]" key="HLS_42_1438" tag="" content="-- Implementing module &apos;mlp_accel&apos;"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1478" tag="" content="----------------------------------------------------------------"/>
+	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_597" tag="" content="Starting scheduling ..."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_41" tag="" content="Pipelining loop &apos;WRITE_LOOP&apos;."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_44" tag="" content="Pipelining result : Target II = 1, Final II = 1, Depth = 1."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_41" tag="" content="Pipelining loop &apos;L3_NEURONS_L3_BLOCKS_LOOP&apos;."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_44" tag="" content="Pipelining result : Target II = 1, Final II = 1, Depth = 6."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_41" tag="" content="Pipelining loop &apos;L2_BLOCKS_LOOP&apos;."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_44" tag="" content="Pipelining result : Target II = 1, Final II = 1, Depth = 5."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_41" tag="" content="Pipelining loop &apos;L1_BLOCKS_LOOP&apos;."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_44" tag="" content="Pipelining result : Target II = 1, Final II = 1, Depth = 5."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_41" tag="" content="Pipelining loop &apos;LOAD_LOOP_B&apos;."/>
+	<Message severity="WARNING" prefix="[SCHED 204-69]" key="SCHED_RESOURCE_CONSTRAINT_NOT_MET_38" tag="SDX_KERNEL,SCHEDULE" content="Unable to schedule &apos;load&apos; operation (&apos;in_vec_load_1&apos;, ../../mlp.cpp:142) on array &apos;in_vec&apos; due to limited memory ports. Please consider using a memory core with more ports or partitioning the array &apos;in_vec&apos;."/>
+	<Message severity="INFO" prefix="[SCHED 204-61]" key="SCHED_PIPELINING_STATUS_44" tag="" content="Pipelining result : Target II = 1, Final II = 16, Depth = 17."/>
+	<Message severity="WARNING" prefix="[SCHED 204-21]" key="SCHED_DELAY_EXCEEDED_76" tag="SDX_KERNEL,SCHEDULE" content="Estimated clock period (11.4246ns) exceeds the target (target clock period: 10ns, clock uncertainty: 1.25ns, effective delay budget: 8.75ns)."/>
+	<Message severity="WARNING" prefix="[SCHED 204-21]" key="SCHED_DELAY_EXCEEDED_74" tag="SDX_KERNEL,SCHEDULE" content="The critical path in module &apos;mlp_accel&apos; consists of the following:
+	&apos;mul&apos; operation of DSP[686] (&apos;tmp_45_1&apos;, ../../mlp.cpp:59-&gt;../../mlp.cpp:191) [633]  (3.36 ns)
+	&apos;add&apos; operation of DSP[686] (&apos;tmp62&apos;, ../../mlp.cpp:191) [686]  (3.02 ns)
+	&apos;add&apos; operation (&apos;tmp63&apos;, ../../mlp.cpp:191) [687]  (2.52 ns)
+	&apos;add&apos; operation (&apos;tmp64&apos;, ../../mlp.cpp:191) [689]  (2.52 ns)"/>
+	<Message severity="INFO" prefix="[SCHED 204-11]" key="SCHED_SCHED_STATUS_596" tag="" content="Finished scheduling."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 21.67 seconds; current allocated memory: 84.696 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-434]" key="HLS 200-434" tag="SDX" content="Only 5 loops out of a total 8 loops have been pipelined in this design."/>
+	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_926" tag="" content="Starting micro-architecture generation ..."/>
+	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_698" tag="" content="Performing variable lifetime analysis."/>
+	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_697" tag="" content="Exploring resource sharing."/>
+	<Message severity="INFO" prefix="[BIND 205-101]" key="BIND_101_693" tag="" content="Binding ..."/>
+	<Message severity="INFO" prefix="[BIND 205-100]" key="BIND_100_925" tag="" content="Finished micro-architecture generation."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 10.47 seconds; current allocated memory: 89.626 MB."/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1483" tag="" content="----------------------------------------------------------------"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1484" tag="" content="-- Generating RTL for module &apos;mlp_accel&apos;"/>
+	<Message severity="INFO" prefix="[HLS 200-10]" key="HLS_10_1485" tag="" content="----------------------------------------------------------------"/>
+	<Message severity="INFO" prefix="[RTGEN 206-500]" key="PREPROC_IO_COMP_CONFLICT_1950" tag="" content="Setting interface mode on port &apos;mlp_accel/in_vec&apos; to &apos;s_axilite &amp; ap_memory&apos;."/>
+	<Message severity="INFO" prefix="[RTGEN 206-500]" key="PREPROC_IO_COMP_CONFLICT_1950" tag="" content="Setting interface mode on port &apos;mlp_accel/out_vec&apos; to &apos;s_axilite &amp; ap_memory&apos;."/>
+	<Message severity="INFO" prefix="[RTGEN 206-500]" key="PREPROC_IO_COMP_CONFLICT_1950" tag="" content="Setting interface mode on function &apos;mlp_accel&apos; to &apos;s_axilite &amp; ap_ctrl_hs&apos;."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_851" tag="" content="Bundling port &apos;return&apos;, &apos;in_vec&apos; to AXI-Lite port CTRL_BUS."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mac_muladd_14s_16s_30s_30_1_1&apos;: 10 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mac_muladd_14s_16s_31s_31_1_1&apos;: 7 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mac_muladd_15s_16s_31s_31_1_1&apos;: 7 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mul_mul_14s_16s_30_1_1&apos;: 7 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mul_mul_15s_16s_30_1_1&apos;: 3 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mul_mul_15s_16s_31_1_1&apos;: 14 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mux_104_16_1_1&apos;: 1 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_855" tag="" content="Generating core module &apos;mlp_accel_mux_42_16_1_1&apos;: 16 instance(s)."/>
+	<Message severity="INFO" prefix="[RTGEN 206-100]" key="RTGEN_100_856" tag="" content="Finished creating RTL model for &apos;mlp_accel&apos;."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_966" tag="" content=" Elapsed time: 15.46 seconds; current allocated memory: 98.004 MB."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_0_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_1_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_2_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_3_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_4_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_5_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_6_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_7_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_8_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_9_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_10_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_11_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_12_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_13_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_14_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l1_15_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_0_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_1_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_2_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_3_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_4_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_5_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_6_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_7_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_8_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_9_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_10_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_11_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_12_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_13_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_14_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l2_15_rom&apos; using auto ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_0_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_1_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_2_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_3_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_4_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_5_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_6_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_7_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_8_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_9_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_10_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_11_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_12_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_13_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_14_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-279]" key="RTMG_279_1793" tag="" content="Implementing memory &apos;mlp_accel_weights_l3_15_rom&apos; using distributed ROMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-278]" key="RTMG_278_1790" tag="" content="Implementing memory &apos;mlp_accel_input_buf_0_ram (RAM)&apos; using distributed RAMs."/>
+	<Message severity="INFO" prefix="[RTMG 210-278]" key="RTMG_278_1790" tag="" content="Implementing memory &apos;mlp_accel_ping_buf_0_ram (RAM)&apos; using distributed RAMs."/>
+	<Message severity="INFO" prefix="[HLS 200-111]" key="HLS_111_965" tag="" content="Finished generating all RTL models Time (s): cpu = 00:01:05 ; elapsed = 00:01:16 . Memory (MB): peak = 634.957 ; gain = 200.000 ; free physical = 10110 ; free virtual = 10959"/>
+	<Message severity="INFO" prefix="[SYSC 207-301]" key="SYSC_301_1065" tag="" content="Generating SystemC RTL for mlp_accel."/>
+	<Message severity="INFO" prefix="[VHDL 208-304]" key="VHDL_304_1066" tag="" content="Generating VHDL RTL for mlp_accel."/>
+	<Message severity="INFO" prefix="[VLOG 209-307]" key="VLOG_307_1067" tag="" content="Generating Verilog RTL for mlp_accel."/>
+	<Message severity="INFO" prefix="[HLS 200-112]" key="HLS_112_964" tag="" content="Total elapsed time: 76.36 seconds; peak allocated memory: 98.004 MB."/>
+	<Message severity="INFO" prefix="[Common 17-206]" key="Common 17-206" tag="" content="Exiting vivado_hls at Wed Sep  2 16:35:42 2026..."/>
+</Messages>
