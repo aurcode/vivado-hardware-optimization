@@ -1,25 +1,106 @@
-# Vivado HLS Build and Solution Artifacts
-test/
-scripts/phase5_dse/proj_*/
+# ============================================
+# Vivado / Vivado HLS build artifacts
+# ============================================
+
+# HLS project directories (synthesis, impl, sim outputs)
+**/proj_*/
+**/sol_*/
+**/.autopilot/
+**/impl/
+**/syn/
+vivado_hls.app
 *.log
 *.jou
-hs_err_*.log
+*.str
+*.wdb
+*.wcfg
 
-# Compiled Binaries and Objects
+# Generated RTL (these are synthesis outputs, not source)
+# Keep only source .v/.vhd you write yourself
+**/*.vhd
+**/*.vhdl
+
+# LLVM bitcode (HLS intermediate)
+*.bc
+
+# Vivado project files
+*.xpr
+*.bit
+*.mmi
+*.ltx
+*.dcp
+*.hwdef
+*.sysdef
+*.hdf
+.Xil/
+*.cache/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+*.srcs/
+
+# ============================================
+# Compiled binaries and objects
+# ============================================
+*.o
+*.a
+*.so
+*.dylib
+*.elf
+*.exe
+*.out
+
+# Specific compiled binaries in this project
+hw/tests/adversarial_sim_test
+preprocessing/bounded_preproc
 sim_mlp
 bench_mlp
 test_mlp
-*.o
 
-# Python cache and environments
+# ============================================
+# Python
+# ============================================
 __pycache__/
 *.pyc
+*.pyo
 .venv*/
 venv*/
+*.egg-info/
+dist/
+build/
+
+# ============================================
+# Data / model files (too large for git)
+# ============================================
 data/
 *.pt
+*.pth
+*.onnx
+*.h5
 real_world_data/
 include_xilinx/
 
-# Local benchmark output (preserve baseline benchmark_server.json)
+# ============================================
+# Agent / tool internals (not project source)
+# ============================================
+.agents/
+
+# ============================================
+# Scratch / meta files
+# ============================================
+ORIGINAL_REQUEST.md
+TEST_INFRA.md
+TEST_READY.md
 benchmark_vmi*.json
+
+# ============================================
+# OS / editor
+# ============================================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.vscode/
+.idea/

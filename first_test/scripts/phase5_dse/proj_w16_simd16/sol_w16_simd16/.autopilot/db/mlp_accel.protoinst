@@ -1,9 +1,0 @@
-{
-	"version": "1.0",
-	"modules": {
-		"mlp_accel": {
-			"proto_instances": {
-			}
-		}
-	}
-}
