@@ -377,7 +377,7 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 | **4-bit Ultra-Edge** | 4 | Q2.2 | **85.00%** | **-13.00%** | 820 | 4 | 1 | 31.8 µs |
 | **8-bit Parallel-32** | 8 | Q3.5 | **98.00%** | +0.00% | 2,890 | 16 | 4 | **16.1 µs** |
 
-- **Key Takeaway**: 16-bit incurs 52.4% higher LUT utilization and double the BRAMs with **identically zero accuracy gain** ($\Delta \text{Acc} \equiv 0.00\%$).
+- **Key Takeaway**: 16-bit incurs 52.4% higher LUT utilization and double the BRAMs with **identically zero accuracy gain** ($\Delta \text{Acc} \equiv 0.00\\%$).
 - **The Degradation Cliff**: Precision below 8 bits suffers an accuracy drop, crashing to 85.00% at 4 bits (violating the 90% specification).
 
 > **Speaker Notes (Role H - Synthesis & DSE Engineer)**:  

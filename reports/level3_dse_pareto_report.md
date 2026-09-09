@@ -18,7 +18,7 @@ This report satisfies the requirements for the **Level 3 Design Space Exploratio
 
 ### 1.1 Core Scientific & Engineering Contributions
 1. **Multi-Tier PTQ Sensitivity Sweep**: Evaluated 6 distinct architectural configurations (${16\text{b}, 11\text{b}, 8\text{b}, 6\text{b}, 4\text{b}}$, and ${8\text{b}\text{-SIMD32}}$) using bit-accurate fixed-point emulation correlated directly with Vivado HLS post-synthesis PPA metrics on `xc7z020clg400-1`.
-2. **Formal Mathematical Proof of 11-Bit Saturation Knee Point**: Developed a closed-form stochastic noise propagation model combining **Widrow's quantization theory** ($\sigma_q^2 = \Delta^2/12$) with **784-dimensional error accumulation** ($\sigma_{z1} = 2.7456 \cdot 2^{-F}$). Formally proved that for wordlengths $W \ge 11$, the probability of a decision boundary flip approaches zero ($Q(195.6) \approx 0$), resulting in strictly zero marginal accuracy gain ($\Delta \text{Acc}(16\text{b} - 11\text{b}) \equiv 0.00\%$).
+2. **Formal Mathematical Proof of 11-Bit Saturation Knee Point**: Developed a closed-form stochastic noise propagation model combining **Widrow's quantization theory** ($\sigma_q^2 = \Delta^2/12$) with **784-dimensional error accumulation** ($\sigma_{z1} = 2.7456 \cdot 2^{-F}$). Formally proved that for wordlengths $W \ge 11$, the probability of a decision boundary flip approaches zero ($Q(195.6) \approx 0$), resulting in strictly zero marginal accuracy gain ($\Delta \text{Acc}(16\text{b} - 11\text{b}) \equiv 0.00\\%$).
 3. **Catastrophic 4-Bit Collapse Analysis**: Proved that reducing precision to 4 bits ($F = 2, \Delta = 0.25$) inflates differential logit noise to $\sqrt{2}\sigma_{z2} \approx 3.14$, surpassing the 10th percentile decision margin (2.96), triggering widespread class flipping and degrading accuracy to 85.00%.
 4. **Pareto Frontier & Dominance Construction**: Constructed the empirical Area-Delay Product (ADP) vs. Accuracy Pareto frontier. Formally proved that **16-bit is Pareto-dominated**, whereas **11-bit Baseline**, **8-bit Compact**, and **8-bit Parallel-32** form the non-dominated Pareto frontier.
 5. **Concrete Edge Deployment Strategy**: Provided explicit guidance recommending **11-bit** for zero-compromise precision and **8-bit** for resource-constrained edge sensor nodes.
@@ -98,28 +98,28 @@ $$
 
 ### 3.2 Empirical Statistical Characteristics of Model Parameters
 Direct measurement on the frozen model weights (`hw/weights.h`) and test set (`hw/test_inputs.h`) yields:
-- **FC1 Weights ($W_1 \in \mathbb{R}^{64 \times 784}$)**:
+- **FC1 Weights** ($W_1 \in \mathbb{R}^{64 \times 784}$):
 
 $$
 \text{Mean}(\mu_{w1}) = +0.00198 \approx 0, \quad \text{Variance}(\sigma_{w1}^2) = 0.01342, \quad \overline{w_1^2} = \sigma_{w1}^2 + \mu_{w1}^2 = 0.01342
 $$
 
-- **FC2 Weights ($W_2 \in \mathbb{R}^{10 \times 64}$)**:
+- **FC2 Weights** ($W_2 \in \mathbb{R}^{10 \times 64}$):
 
 $$
 \text{Mean}(\mu_{w2}) = -0.03768, \quad \text{Variance}(\sigma_{w2}^2) = 0.07033, \quad \overline{w_2^2} = 0.07175
 $$
 
-- **Input Images ($X \in [0.0, 1.0]^{784}$)**:
+- **Input Images** ($X \in [0.0, 1.0]^{784}$):
 
 $$
 \text{Mean}(\mu_x) = 0.11989, \quad \text{Second Moment}(\overline{x^2}) = 0.10196
 $$
 
-- **Logit Decision Margin ($\Delta z = z_{2, \text{top1}} - z_{2, \text{top2}}$)**:
+- **Logit Decision Margin** ($\Delta z = z_{2, \text{top1}} - z_{2, \text{top2}}$):
 
 $$
-\text{Mean}(\Delta z) = 6.41, \quad \text{Median}(\Delta z) = 6.40, \quad \text{10th Percentile}(\Delta z_{10\%}) = 2.96, \quad \text{Min}(\Delta z_{\min}) = 0.0336
+\text{Mean}(\Delta z) = 6.41, \quad \text{Median}(\Delta z) = 6.40, \quad \text{10th Percentile}(\Delta z) = 2.96, \quad \text{Min}(\Delta z_{\min}) = 0.0336
 $$
 
 ### 3.3 784-Dimensional Error Accumulation in Layer 1 (FC1)
@@ -208,7 +208,7 @@ Precision Tier | Radix | Frac (F) | Step Size (Delta) | sigma_z2 | Diff Noise (s
 1. **$W \ge 11$ Saturation Zone**: At $W = 11$ ($F = 8$), the margin ratio for the 10th percentile sample is $\frac{2.96}{0.02343} = 126.3$. The flip probability is $Q(126.3) \approx 10^{-3460} \equiv 0$. Even for the single most marginal sample in the test set ($\Delta z_{\min} = 0.0336$), the ratio is $\frac{0.0336}{0.02343} = 1.43$, giving $P(\text{flip}) \approx 0.07$ (less than 1 sample flip). Increasing precision to 16 bits ($F = 13$) reduces noise to 0.00073, but because $P(\text{flip})$ is already identically zero at 11 bits, the marginal gain is:
 
 $$
-\Delta \text{Acc}(16\text{b} - 11\text{b}) \equiv 0.00\%
+\Delta \text{Acc}(16\text{b} - 11\text{b}) \equiv 0.00\\%
 $$
 
    *Zero marginal accuracy benefit exists for $W \gt 11$ bits.*
@@ -250,7 +250,7 @@ $$
 ### 5.1 Formal Dominance Evaluations
 1. **16-bit High-Precision is STRICTLY DOMINATED**:
    - Comparing 16-bit ($W=16$) vs 11-bit Baseline ($W=11$):
-     - $\text{Accuracy}(11\text{b}) = 98.00\% == \text{Accuracy}(16\text{b}) = 98.00\%$
+     - $\text{Accuracy}(11\text{b}) = 98.00\\% == \text{Accuracy}(16\text{b}) = 98.00\\%$
      - $\text{LUT}(11\text{b}) = 2,100 \lt \text{LUT}(16\text{b}) = 3,200$ (-34.4% savings)
      - $\text{FF}(11\text{b}) = 2,280 \lt \text{FF}(16\text{b}) = 3,450$ (-33.9% savings)
      - $\text{BRAM}(11\text{b}) = 2 \lt \text{BRAM}(16\text{b}) = 4$ (-50.0% savings)
@@ -262,21 +262,21 @@ $$
    - **Frontier Point 1: 11-bit Baseline (Accuracy-Optimal)**:
 
 $$
-\text{Acc} = 98.00\%, \quad \text{LUT} = 2,100, \quad \text{DSP} = 16, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 66,780
+\text{Acc} = 98.00\\%, \quad \text{LUT} = 2,100, \quad \text{DSP} = 16, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 66,780
 $$
 
      *Achieves maximum accuracy with zero quantization loss, consuming only 7.3% DSPs on XC7Z020.*
    - **Frontier Point 2: 8-bit Compact (Area-Optimal)**:
 
 $$
-\text{Acc} = 98.00\%, \quad \text{LUT} = 1,450, \quad \text{DSP} = 8, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 46,110
+\text{Acc} = 98.00\\%, \quad \text{LUT} = 1,450, \quad \text{DSP} = 8, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 46,110
 $$
 
      *Maintains 98.00% accuracy while cutting DSP usage in half (from 16 to 8 DSPs) and reducing LUTs by 31.0% vs 11-bit.*
    - **Frontier Point 3: 8-bit Parallel-32 (Throughput-Optimal)**:
 
 $$
-\text{Acc} = 98.00\%, \quad \text{LUT} = 2,890, \quad \text{DSP} = 16, \quad \text{Latency} = 16.1 \ \mu\text{s}, \quad \text{ADP} = 46,529
+\text{Acc} = 98.00\\%, \quad \text{LUT} = 2,890, \quad \text{DSP} = 16, \quad \text{Latency} = 16.1 \ \mu\text{s}, \quad \text{ADP} = 46,529
 $$
 
      *Doubles SIMD width to 32 lanes, cutting inference latency by 50% to 16.1 µs and elevating throughput to 62,111 FPS.*

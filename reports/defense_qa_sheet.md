@@ -281,7 +281,7 @@ $$
 $$
 
 3. **Breaching Decision Margins**:
-   Statistical profiling of our test vectors shows that the **10th percentile decision margin is $\Delta z_{10\%} = 2.96$**, and the minimum margin is $\Delta z_{\min} = 0.0336$. At 8 bits, the noise standard deviation (0.187) is 15.8× smaller than the margin, yielding a flip probability $Q(15.8) \approx 0$. At 4 bits, the differential noise (1.50) reaches the same order of magnitude as the decision margin. For more than 15% of samples, the perturbation crosses the decision boundary ($Q(\Delta z / \sqrt{2}\sigma_{z2}) \gg 0$), triggering widespread classification flips and causing accuracy to collapse to 85.00%."
+   Statistical profiling of our test vectors shows that the **10th percentile decision margin** is $\Delta z_{\text{10th}} = 2.96$, and the minimum margin is $\Delta z_{\min} = 0.0336$. At 8 bits, the noise standard deviation (0.187) is 15.8× smaller than the margin, yielding a flip probability $Q(15.8) \approx 0$. At 4 bits, the differential noise (1.50) reaches the same order of magnitude as the decision margin. For more than 15% of samples, the perturbation crosses the decision boundary ($Q(\Delta z / \sqrt{2}\sigma_{z2}) \gg 0$), triggering widespread classification flips and causing accuracy to collapse to 85.00%."
 
 ---
 
@@ -293,7 +293,7 @@ $$
 "In multi-objective optimization, design point $A$ **Pareto-dominates** design point $B$ if $A$ is strictly superior in at least one metric and no worse in all other metrics:
 
 1. **Formal Proof that 16-Bit is Pareto-Dominated by 11-Bit**:
-   - Accuracy: $\text{Acc}(11\text{b}) = 98.00\% == \text{Acc}(16\text{b}) = 98.00\%$
+   - Accuracy: $\text{Acc}(11\text{b}) = 98.00\\% == \text{Acc}(16\text{b}) = 98.00\\%$
    - Logic Area: $\text{LUT}(11\text{b}) = 2,100 \lt \text{LUT}(16\text{b}) = 3,200$ (-34.4% savings)
    - Registers: $\text{FF}(11\text{b}) = 2,280 \lt \text{FF}(16\text{b}) = 3,450$ (-33.9% savings)
    - Block RAM: $\text{BRAM}(11\text{b}) = 2 \lt \text{BRAM}(16\text{b}) = 4$ (-50.0% savings)
@@ -308,7 +308,7 @@ W^* = \min \left\{ W \ \Big| \ \frac{\partial \text{Acc}}{\partial W} \equiv 0 \
 $$
 
    In our empirical sweep:
-   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{11\text{b} \to 16\text{b}} = \frac{98.00\% - 98.00\%}{16 - 11} = \mathbf{0.00\% / \text{bit}}$
-   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{8\text{b} \to 11\text{b}} = \frac{98.00\% - 98.00\%}{11 - 8} = \mathbf{0.00\% / \text{bit}}$
-   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{4\text{b} \to 8\text{b}} = \frac{98.00\% - 85.00\%}{8 - 4} = \mathbf{+3.25\% / \text{bit}}$
+   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{11\text{b} \to 16\text{b}} = \frac{98.00\\% - 98.00\\%}{16 - 11} = \mathbf{0.00\\% / \text{bit}}$
+   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{8\text{b} \to 11\text{b}} = \frac{98.00\\% - 98.00\\%}{11 - 8} = \mathbf{0.00\\% / \text{bit}}$
+   - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{4\text{b} \to 8\text{b}} = \frac{98.00\\% - 85.00\\%}{8 - 4} = \mathbf{+3.25\\% / \text{bit}}$
    The transition occurs precisely at **$W = 11$ bits**, establishing it as the optimal saturation knee point."
