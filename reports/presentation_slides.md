@@ -221,11 +221,10 @@
   #pragma HLS ARRAY_PARTITION variable=l1_act cyclic factor=16 dim=1
   ```
 - **Conflict-Free Proof**: For chunk $b$ and lane $k \in [0, 15]$:
+
   $$
-
-\text{BankID}(\text{Addr}) = (b \cdot 16 + k) \pmod{16} = k
-
-$$
+  \text{BankID}(\text{Addr}) = (b \cdot 16 + k) \pmod{16} = k
+  $$
 
   All 16 parallel SIMD lanes access **independent physical memory banks** simultaneously in every cycle.
   - Zero bank contention.
@@ -392,11 +391,10 @@ Total     |     9     8    10    19    11     9     9     9     6     0 |      9
 1. **Widrow Error**: $\sigma_q^2 = \frac{\Delta^2}{12} = \frac{2^{-2F}}{12}$.
 2. **784-D Accumulation**: $\sigma_{z1}^2 = 784 \cdot (\overline{x^2} + \overline{w_1^2}) \cdot \frac{\Delta^2}{12} \implies \sigma_{z1} = 2.7456 \cdot 2^{-F}$.
 3. **Logit Margin & Q-Function**:
+
    $$
-
-P(\text{flip} \mid \Delta z) = Q\left( \frac{\Delta z}{\sqrt{2}\sigma_{z2}} \right)
-
-$$
+   P(\text{flip} \mid \Delta z) = Q\left( \frac{\Delta z}{\sqrt{2}\sigma_{z2}} \right)
+   $$
 
    - At $W = 11$ ($F=8, \Delta = 2^{-8}$): $\sqrt{2}\sigma_{z2} = 0.0234 \ll 2.96$ (10th percentile margin).  
      Ratio is ${126.3 \implies Q(126.3) \approx 0}$. **Decision flips are mathematically impossible.**

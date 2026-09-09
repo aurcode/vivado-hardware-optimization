@@ -159,12 +159,14 @@ void simd_mac16(
 
 ### 3.3 Sign-Bit ReLU Activation
 The non-linear activation for FC1 hidden layer is implemented via direct sign-bit inspection:
+
 $$
 f(z) = \begin{cases} 
 z, & \text{if } z \ge 0 \quad (z[\text{MSB}] = 0) \\ 
 0, & \text{if } z \lt 0 \quad (z[\text{MSB}] = 1) 
 \end{cases}
 $$
+
 Because $f(z)$ checks the MSB sign bit of `acc`, the operation is implemented in combinational LUTs with **0 cycle pipeline latency** and zero DSP overhead.
 
 ### 3.4 10-Way Parallel Argmax Classifier
@@ -280,10 +282,12 @@ Inspection of the synthesized RTL and synthesis report confirms:
           +--- mul_11s_11s_22_1_1_U16 (DSP48E1)
    ```
 3. **Reuse Factor**:
+
    $$
-\text{Hardware Reuse Factor} = \frac{\text{Virtual SIMD Ops}}{\text{Physical SIMD Units}} = \frac{3,136 + 40}{16 \text{ units} \times 1 \text{ cycle}} = \mathbf{198.5\times \text{ temporal reuse}}
-$$
-This formally establishes complete compliance with the Level 1 hardware reuse mandate.
+   \text{Hardware Reuse Factor} = \frac{\text{Virtual SIMD Ops}}{\text{Physical SIMD Units}} = \frac{3,136 + 40}{16 \text{ units} \times 1 \text{ cycle}} = \mathbf{198.5\times \text{ temporal reuse}}
+   $$
+
+   This formally establishes complete compliance with the Level 1 hardware reuse mandate.
 
 ---
 
@@ -309,13 +313,17 @@ custom_data_t l2_logits[OUTPUT_NODES];
 
 ### 6.3 Mathematical Proof of Conflict-Free Access
 For any SIMD block index $b$ and lane index $k \in [0, 15]$, the global memory address accessed is:
+
 $$
 \text{Addr}(b, k) = b \cdot 16 + k
 $$
+
 Under cyclic partitioning with factor $P = 16$, memory element $\text{Addr}$ is mapped to physical bank ID:
+
 $$
 \text{BankID}(\text{Addr}) = \text{Addr} \pmod{16} = (b \cdot 16 + k) \pmod{16} = k
 $$
+
 Because $\text{BankID}(\text{Addr}(b, k)) = k$, each of the 16 parallel SIMD lanes accesses a **distinct physical memory bank $k$** for all chunks $b$.
 - Zero bank collisions occur.
 - Memory bandwidth = ${16 \text{ words} \times 11 \text{ bits} \times 100 \text{ MHz} = \mathbf{17.6 \text{ Gbps}}}$.
@@ -345,9 +353,11 @@ The design was synthesized using Vivado HLS targeting the commercial-grade Xilin
 
 ### 7.2 Critical Path Analysis
 The critical timing path originates from the AXI-Lite registered memory bank through the 11-bit multiplier input registers, traverses the 4-stage binary adder tree, and terminates at the 24-bit accumulator register:
+
 $$
 \text{Delay}_{\text{crit}} = T_{\text{clk-q}}(\text{DSP}) + T_{\text{tree}}(\text{LUT adders}) + T_{\text{accum}} + T_{\text{setup}} = 7.550 \text{ ns} \lt 10.000 \text{ ns}
 $$
+
 The positive slack of **$+2.450 \text{ ns}$** provides a comfortable 24.5% timing margin, preventing setup violations across process, voltage, and temperature (PVT) variations.
 
 ---

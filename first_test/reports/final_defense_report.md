@@ -50,27 +50,19 @@ graph TD
 The network is tailored for edge inference:
 
 $$
-
 \mathbf{z}_1 = \mathbf{W}_1 \mathbf{x}, \quad \mathbf{a}_1 = \text{ReLU}(\mathbf{z}_1) \quad (\mathbf{W}_1 \in \mathbb{R}^{128 \times 784})
-
 $$
 
 $$
-
 \mathbf{z}_2 = \mathbf{W}_2 \mathbf{a}_1, \quad \mathbf{a}_2 = \text{ReLU}(\mathbf{z}_2) \quad (\mathbf{W}_2 \in \mathbb{R}^{64 \times 128})
-
 $$
 
 $$
-
 \mathbf{z}_3 = \mathbf{W}_3 \mathbf{a}_2 \quad (\mathbf{W}_3 \in \mathbb{R}^{10 \times 64})
-
 $$
 
 $$
-
 \hat{y} = \arg\max_k (\mathbf{z}_3[k])
-
 $$
 
 - **Pruning Rationale:** Omitting the bias vector $\mathbf{b} \in \mathbb{R}^M$ eliminates 202 addition operations per inference and avoids dedicated BRAM/LUT storage registers with zero accuracy penalty (97.76% accuracy achieved on MNIST).
@@ -82,11 +74,10 @@ To avoid floating-point hardware without sacrificing precision:
 - **Weights ($\mathbf{W}$):** Scaled by $S_{\text{w}} = 2^{14} = 16384$ (14 fractional bits, range $[-2, +2)$).
 - **Multiplier Products ($\mathbf{p} = \mathbf{x} \cdot \mathbf{W}$):** Accumulate at scale $S_{\text{prod}} = S_{\text{act}} \times S_{\text{w}} = 2^{24}$.
 - **Midpoint Rescaling:** Products are rescaled back to $S_{\text{act}} = 2^{10}$ using an arithmetic right-shift with midpoint rounding:
+
   $$
-
-\mathbf{a}_{\text{rescaled}} = \left\lfloor \frac{\mathbf{z} + 2^{13}}{2^{14}} \right\rfloor = (\mathbf{z} + 8192) \gg 14
-
-$$
+  \mathbf{a}_{\text{rescaled}} = \left\lfloor \frac{\mathbf{z} + 2^{13}}{2^{14}} \right\rfloor = (\mathbf{z} + 8192) \gg 14
+  $$
 
 ---
 
