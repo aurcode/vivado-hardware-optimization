@@ -41,7 +41,7 @@
 
 ### Question 3: Bias Elimination Theoretical Justification
 **Professor's Challenge**:  
-*"Standard neural networks include learnable bias parameters in every dense layer ($z = Wx + b$). Your architecture eliminates all biases ($b \equiv 0$). Can you justify mathematically and empirically why eliminating biases does not harm classification accuracy?"*
+*"Standard neural networks include learnable bias parameters in every dense layer (z = Wx + b). Your architecture eliminates all biases (b ≡ 0). Can you justify mathematically and empirically why eliminating biases does not harm classification accuracy?"*
 
 **Model Answer (Role B)**:  
 "In neural network theory, the bias vector $b$ shifts the activation hyperplane away from the origin, ensuring that the decision boundary is not constrained to pass through the coordinate origin. We justified bias elimination based on the following principles:
@@ -164,7 +164,7 @@ $$. This guarantees mathematically that not a single arithmetic saturation or pr
 
 ### Question 10: Eliminating BRAM Contention & Achieving II = 1
 **Professor's Challenge**:  
-*"How did you achieve an Initiation Interval of $\text{II} = 1$ in your SIMD loops given that on-chip Block RAMs have only 2 read ports?"*
+*"How did you achieve an Initiation Interval of II = 1 in your SIMD loops given that on-chip Block RAMs have only 2 read ports?"*
 
 **Model Answer (Role E)**:  
 "Standard Xilinx True Dual-Port BRAMs allow at most 2 independent read operations per cycle. Reading 16 activations and 16 weights in a single cycle from monolithic memory would cause port contention, forcing Vivado HLS to serialize memory accesses across $\lceil 16 / 2 \rceil = 8$ cycles ($\text{II} = 8$).
@@ -297,7 +297,7 @@ $$
    - At 4-bit ($W=4, I=2$): Fractional length $F = 2 \implies \Delta = 2^{-2} = 0.25000$.
    Notice that reducing wordlength from 8 to 4 bits increases the quantization step size by **8.0×**, which inflates the scalar noise variance $\sigma_q^2 = \Delta^2 / 12$ by **64.0× (+18.1 dB)**.
 2. **784-Dimensional Accumulation**:
-   In FC1, accumulating 784 noisy products amplifies the noise standard deviation by $\sqrt{784 \cdot (\overline{x^2} + \overline{w_1^2})} \approx 9.5\times$. At 4 bits, the output logit differential noise expands to:
+   In FC1, accumulating 784 noisy products amplifies the noise standard deviation by **9.5×** ($\sqrt{784 \cdot (\overline{x^2} + \overline{w_1^2})} \approx 9.5$). At 4 bits, the output logit differential noise expands to:
 
 $$
 \sqrt{2}\sigma_{z2} \approx 6.00 \cdot 2^{-F} = 6.00 \cdot 2^{-2} = \mathbf{1.50}
@@ -316,12 +316,12 @@ $$
 "In multi-objective optimization, design point $A$ **Pareto-dominates** design point $B$ if $A$ is strictly superior in at least one metric and no worse in all other metrics:
 
 1. **Formal Proof that 16-Bit is Pareto-Dominated by 11-Bit**:
-   - **Accuracy**: $\text{Acc}(11\text{b}) = 98.00\% = \text{Acc}(16\text{b}) = 98.00\%$ (Identical)
-   - **Logic Area**: $\text{LUT}(11\text{b}) = 2,100 \lt \text{LUT}(16\text{b}) = 3,200$ (-34.4% savings)
-   - **Registers**: $\text{FF}(11\text{b}) = 2,280 \lt \text{FF}(16\text{b}) = 3,450$ (-33.9% savings)
-   - **Block RAM**: $\text{BRAM}(11\text{b}) = 2 \lt \text{BRAM}(16\text{b}) = 4$ (-50.0% savings)
-   - **Latency**: $\text{Latency}(11\text{b}) = 31.8 \ \mu\text{s} \lt \text{Latency}(16\text{b}) = 32.4 \ \mu\text{s}$
-   - **Timing Slack**: $\text{Slack}(11\text{b}) = +2.45 \text{ ns} \gt \text{Slack}(16\text{b}) = +1.82 \text{ ns}$
+   - **Accuracy**: **Acc(11b) = 98.00% == Acc(16b) = 98.00%** (Identical)
+   - **Logic Area**: **LUT(11b) = 2,100** < **LUT(16b) = 3,200** (-34.4% savings)
+   - **Registers**: **FF(11b) = 2,280** < **FF(16b) = 3,450** (-33.9% savings)
+   - **Block RAM**: **BRAM(11b) = 2** < **BRAM(16b) = 4** (-50.0% savings)
+   - **Latency**: **Latency(11b) = 31.8 µs** < **Latency(16b) = 32.4 µs**
+   - **Timing Slack**: **Slack(11b) = +2.45 ns** > **Slack(16b) = +1.82 ns**
    Because 11-bit is strictly superior in LUTs, FFs, BRAMs, latency, and timing slack while matching accuracy identically, **16-bit is Pareto-dominated** and should never be deployed on edge FPGAs.
 2. **Mathematical Definition of the Saturation Knee Point**:
    The saturation knee point $W^*$ is defined as the minimum bitwidth where the second derivative of accuracy with respect to precision transitions to zero:

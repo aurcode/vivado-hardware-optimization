@@ -21,7 +21,7 @@ This report provides the architectural specification, microarchitectural impleme
 ### 1.1 Key Technical Highlights
 - **Topology**: Fully connected neural network: 784 inputs → 64 hidden neurons (ReLU) → 10 output neurons (Linear Logits) → Argmax Classifier. Eliminates all bias vectors ($b \equiv 0$) without accuracy degradation, saving 74 storage words and simplifying accumulator paths.
 - **Fixed-Point Numerical Representation**: Fully bit-accurate `ap_fixed<11, 3, AP_RND, AP_SAT>` numerical format across all activations and frozen weights (matching `hw/weights.h`). Intermediate accumulation utilizes `ap_fixed<24, 8, AP_RND, AP_SAT>` to guarantee zero intermediate overflow over 784-term inner products.
-- **Microarchitecture (TDM SIMD MAC Reuse)**: A single, non-inlined 16-way SIMD Multiply-Accumulate (`simd_mac16`) core executes both Fully-Connected Layer 1 (FC1: 49 chunks $\times$ 64 neurons = 3,136 cycles) and Layer 2 (FC2: 4 chunks $\times$ 10 classes = 40 cycles) via a 6-state Time-Division Multiplexed (TDM) Finite State Machine (FSM).
+- **Microarchitecture (TDM SIMD MAC Reuse)**: A single, non-inlined 16-way SIMD Multiply-Accumulate (`simd_mac16`) core executes both Fully-Connected Layer 1 (FC1: 49 chunks × 64 neurons = 3,136 cycles) and Layer 2 (FC2: 4 chunks × 10 classes = 40 cycles) via a 6-state Time-Division Multiplexed (TDM) Finite State Machine (FSM).
 - **Physical Synthesis PPA (XC7Z020 @ 100 MHz)**:
   - **LUT Utilization**: 2,100 / 53,200 (3.95%)
   - **FF Utilization**: 2,280 / 106,400 (2.14%)
@@ -357,7 +357,7 @@ The design was synthesized using Vivado HLS targeting the commercial-grade Xilin
 | | **Achieved Clock Period** | — | **7.550 ns** | **132.45 MHz** | PASSED ($F_{\text{max}} = 132.45 \text{ MHz} \gt 100 \text{ MHz}$) |
 | | **Worst Negative Slack (WNS)**| — | **+2.450 ns** | — | **PASSED (Positive Margin)** |
 | **Performance** | **Compute Latency (Cycles)** | — | **3,176** | — | Fully Deterministic |
-| | **Compute Latency ($\mu$s)** | — | **31.76 µs** | — | Real-time classification |
+| | **Compute Latency (µs)** | — | **31.76 µs** | — | Real-time classification |
 | | **Initiation Interval (II)** | — | **1** | — | Optimal pipelining |
 | | **Peak Inference Throughput** | — | **31,446 FPS**| — | Exceeds camera frame rates |
 

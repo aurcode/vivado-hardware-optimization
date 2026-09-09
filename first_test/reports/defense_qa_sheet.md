@@ -95,7 +95,7 @@
 >    - Output vector: 10 `int16_t` logits = **20 bytes**.
 >    - Total payload per inference: **1,588 bytes (1.55 KB)**.
 > 2. **AXI-Lite vs. AXI DMA:** Setting up an AXI DMA transaction requires the ARM Cortex-A9 processor to write to DMA source/destination registers, configure buffer descriptors, flush L1/L2 data caches, and handle interrupt service routines (ISRs). The software driver overhead of DMA initiation is typically **5 to 15 microseconds**.
-> 3. **System Latency Comparison:** At 100 MHz on a 32-bit AXI-Lite bus, burst-writing 784 pixels takes approximately 392 clock cycles = **3.92 microseconds**. Since 3.92 $\mu$s is significantly lower than the DMA setup latency, AXI-Lite provides lower end-to-end CPU-to-Accelerator latency for single-frame inference.
+> 3. **System Latency Comparison:** At 100 MHz on a 32-bit AXI-Lite bus, burst-writing 784 pixels takes approximately 392 clock cycles = **3.92 microseconds**. Since 3.92 µs is significantly lower than the DMA setup latency, AXI-Lite provides lower end-to-end CPU-to-Accelerator latency for single-frame inference.
 > 4. **Scalability:** If batching thousands of images from DDR memory (e.g., continuous video streaming), transitioning to an AXI-Stream interface coupled with an AXI DMA engine in scatter-gather mode would be optimal."
 
 ---

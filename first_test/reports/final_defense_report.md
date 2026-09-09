@@ -17,7 +17,7 @@ This project delivers an end-to-end, high-performance, low-power deep neural net
 3. **Conflict-Free On-Chip Memory:** Block-aligned 3D array partitioning (`[neurons][blocks][SIMD]`) achieving an Initiation Interval of **II = 1** across all compute loops without memory stalls.
 4. **End-to-End Verification:** Validated via bit-accurate C++ host simulation, Vivado HLS C-simulation, RTL synthesis, cycle-accurate C/RTL co-simulation in `xsim`, and packaged as a Vivado IP Catalog block.
 5. **Real-World Robustness (Level 2):** An adaptive camera image ingestion pipeline (luminance conversion, Otsu thresholding, aspect-ratio preserved scaling to 20 × 20$, and Center-of-Mass alignment onto a 28 × 28$ canvas).
-6. **Design Space Exploration (Level 3 Bonus):** Physical synthesis across 16-bit, 8-bit, and 4-bit precisions, revealing the **8-bit @ SIMD-32** Pareto knee point (**17,928 FPS**, 55.8 $\mu$s latency, 97.67% accuracy, using only 21.8% DSPs and 35.7% BRAMs).
+6. **Design Space Exploration (Level 3 Bonus):** Physical synthesis across 16-bit, 8-bit, and 4-bit precisions, revealing the **8-bit @ SIMD-32** Pareto knee point (**17,928 FPS**, 55.8 µs latency, 97.67% accuracy, using only 21.8% DSPs and 35.7% BRAMs).
 
 ---
 
@@ -147,7 +147,7 @@ Synthesized via `make csynth` targeting `xc7z020clg400-1`:
 
 ### 5.2 Latency and Throughput
 - **Clock Period:** Target 10.0 ns (100 MHz).
-- **Inference Latency:** **8,173 clock cycles** (**81.7 $\mu$s** per digit).
+- **Inference Latency:** **8,173 clock cycles** (**81.7 µs** per digit).
 - **Throughput:** **12,235 inferences / second**.
 - **Loop Pipelining:** Achieved **II = 1** across `L1_BLOCKS_LOOP`, `L2_BLOCKS_LOOP`, and `L3_BLOCKS_LOOP`.
 
@@ -195,12 +195,12 @@ graph LR
 
 Four hardware architectures were synthesized on the Xilinx XC7Z020 FPGA:
 
-| Configuration | Bitwidth | SIMD | Accuracy | Latency (cyc) | Latency ($\mu$s) | Throughput (FPS) | DSP48E (220) | BRAM_18K (280) | LUT (53.2k) |
+| Configuration | Bitwidth | SIMD | Accuracy | Latency (cyc) | Latency (µs) | Throughput (FPS) | DSP48E (220) | BRAM_18K (280) | LUT (53.2k) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **`W16_SIMD16`** (Baseline) | 16-bit | 16 | **97.76%** | 8,173 | 81.7 $\mu$s | 12,235 | 48 (21.8%) | 142 (50.7%) | 7,203 (13.5%) |
-| **`W8_SIMD16`** (Memory-Opt) | 8-bit | 16 | **97.67%** | 8,782 | 87.8 $\mu$s | 11,387 | **24 (10.9%)** | **77 (27.5%)** | 6,354 (11.9%) |
-| **`W8_SIMD32`** (Throughput) | 8-bit | 32 | **97.67%** | **5,578** | **55.8 $\mu$s** | **17,928** | 48 (21.8%) | 100 (35.7%) | 11,264 (21.2%)|
-| **`W4_SIMD16`** (Extreme Edge) | 4-bit | 16 | **83.62%** | 8,782 | 87.8 $\mu$s | 11,387 | **24 (10.9%)** | **37 (13.2%)** | 6,108 (11.5%) |
+| **`W16_SIMD16`** (Baseline) | 16-bit | 16 | **97.76%** | 8,173 | 81.7 µs | 12,235 | 48 (21.8%) | 142 (50.7%) | 7,203 (13.5%) |
+| **`W8_SIMD16`** (Memory-Opt) | 8-bit | 16 | **97.67%** | 8,782 | 87.8 µs | 11,387 | **24 (10.9%)** | **77 (27.5%)** | 6,354 (11.9%) |
+| **`W8_SIMD32`** (Throughput) | 8-bit | 32 | **97.67%** | **5,578** | **55.8 µs** | **17,928** | 48 (21.8%) | 100 (35.7%) | 11,264 (21.2%)|
+| **`W4_SIMD16`** (Extreme Edge) | 4-bit | 16 | **83.62%** | 8,782 | 87.8 µs | 11,387 | **24 (10.9%)** | **37 (13.2%)** | 6,108 (11.5%) |
 
 ### 7.1 Engineering Deployment Recommendation
 1. **Globally Optimal Operating Point (`W8_SIMD32`):**

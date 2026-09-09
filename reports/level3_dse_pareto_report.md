@@ -41,14 +41,14 @@ All configurations target the Xilinx Zynq-7000 (`xc7z020clg400-1`) at 100 MHz ($
 ### 2.2 Comprehensive Synthesis & Accuracy PPA Scorecard Table
 The table below compiles measured inference accuracy alongside post-synthesis FPGA resource utilization extracted from `dse/synth_results/dse_summary.json`:
 
-| Configuration Profile | Total Bits ($W$) | Radix Format | SIMD Width | Test Acc (%) | Correct / 100 | LUTs | FFs | DSP48E1 | BRAM_18K | Compute Latency | Clock Slack | Area-Delay Product (LUT $\cdot \mu$s) |
+| Configuration Profile | Total Bits ($W$) | Radix Format | SIMD Width | Test Acc (%) | Correct / 100 | LUTs | FFs | DSP48E1 | BRAM_18K | Compute Latency | Clock Slack | Area-Delay Product (LUT · µs) |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **16-bit High-Precision** | 16 | Q3.13 | 16 | 98.00% | 98 | 3,200 | 3,450 | 16 | 4 | 32.4 $\mu$s | +1.82 ns | 103,680 |
-| **11-bit Baseline (Knee Point)** | **11** | **Q3.8** | **16** | **98.00%** | **98** | **2,100** | **2,280** | **16** | **2** | **31.8 $\mu$s** | **+2.45 ns** | **66,780** |
-| **8-bit Compact** | **8** | **Q3.5** | **16** | **98.00%** | **98** | **1,450** | **1,620** | **8** | **2** | **31.8 $\mu$s** | **+2.90 ns** | **46,110** |
-| **6-bit Low-Power** | 6 | Q2.4 | 16 | 93.00% | 93 | 1,120 | 1,280 | 8 | 1 | 31.8 $\mu$s | +3.10 ns | 35,616 |
-| **4-bit Ultra-Edge** | 4 | Q2.2 | 16 | 85.00% | 85 | 820 | 940 | 4 | 1 | 31.8 $\mu$s | +3.25 ns | 26,076 |
-| **8-bit Parallel-32** | **8** | **Q3.5** | **32** | **98.00%** | **98** | **2,890** | **3,150** | **16** | **4** | **16.1 $\mu$s** | **+2.10 ns** | **46,529** |
+| **16-bit High-Precision** | 16 | Q3.13 | 16 | 98.00% | 98 | 3,200 | 3,450 | 16 | 4 | 32.4 µs | +1.82 ns | 103,680 |
+| **11-bit Baseline (Knee Point)** | **11** | **Q3.8** | **16** | **98.00%** | **98** | **2,100** | **2,280** | **16** | **2** | **31.8 µs** | **+2.45 ns** | **66,780** |
+| **8-bit Compact** | **8** | **Q3.5** | **16** | **98.00%** | **98** | **1,450** | **1,620** | **8** | **2** | **31.8 µs** | **+2.90 ns** | **46,110** |
+| **6-bit Low-Power** | 6 | Q2.4 | 16 | 93.00% | 93 | 1,120 | 1,280 | 8 | 1 | 31.8 µs | +3.10 ns | 35,616 |
+| **4-bit Ultra-Edge** | 4 | Q2.2 | 16 | 85.00% | 85 | 820 | 940 | 4 | 1 | 31.8 µs | +3.25 ns | 26,076 |
+| **8-bit Parallel-32** | **8** | **Q3.5** | **32** | **98.00%** | **98** | **2,890** | **3,150** | **16** | **4** | **16.1 µs** | **+2.10 ns** | **46,529** |
 
 ---
 
@@ -151,7 +151,7 @@ $$
 \sigma_{z1} = \sqrt{7.538} \cdot \Delta = 2.7456 \cdot 2^{-F}
 $$
 
-*Notice that the 784-dimensional accumulation amplifies the scalar quantization noise standard deviation by $\sqrt{784 \times 0.11538 / 12} = 2.75\times$.*
+Notice that 784-dimensional accumulation amplifies the scalar quantization noise standard deviation by **2.75×** ($\sqrt{784 \times 0.11538 / 12} \approx 2.75$).
 
 ### 3.4 Propagation Through ReLU and Layer 2 (FC2)
 1. **ReLU Gate**: For a zero-mean Gaussian variable, ReLU acts as a half-wave rectifier, transmitting roughly half the variance:
@@ -205,15 +205,15 @@ Precision Tier | Radix | Frac (F) | Step Size (Delta) | sigma_z2 | Diff Noise (s
 ```
 
 #### Analytical Conclusions from the Proof:
-1. **Saturation Zone** ($W \ge 11$): At $W = 11$ ($F = 8$), the margin ratio for the 10th percentile sample is $\frac{2.96}{0.02343} = 126.3$. The flip probability is $Q(126.3) \approx 10^{-3460} \equiv 0$. Even for the single most marginal sample in the test set ($\Delta z_{\min} = 0.0336$), the ratio is $\frac{0.0336}{0.02343} = 1.43$, giving $P(\text{flip}) \approx 0.07$ (less than 1 sample flip). Increasing precision to 16 bits ($F = 13$) reduces noise to 0.00073, but because $P(\text{flip})$ is already identically zero at 11 bits, the marginal gain is:
+1. **Saturation Zone** (W ≥ 11): At $W = 11$ ($F = 8$), the margin ratio for the 10th percentile sample is $\frac{2.96}{0.02343} = 126.3$. The flip probability is $Q(126.3) \approx 10^{-3460} \equiv 0$. Even for the single most marginal sample in the test set ($\Delta z_{\min} = 0.0336$), the ratio is $\frac{0.0336}{0.02343} = 1.43$, giving $P(\text{flip}) \approx 0.07$ (less than 1 sample flip). Increasing precision to 16 bits ($F = 13$) reduces noise to 0.00073, but because $P(\text{flip})$ is already identically zero at 11 bits, the marginal gain is:
 
 $$
 \Delta \text{Acc}(16\text{b} - 11\text{b}) \equiv 0.00\%
 $$
 
-   *Zero marginal accuracy benefit exists for $W \gt 11$ bits.*
-2. **Benign Degradation Zone** ($8 \le W \lt 11$): At $W = 8$ ($F = 5$), the noise ratio is 15.8× smaller than the 10th percentile margin. The SNR remains high (28.4 dB), preserving 98.00% accuracy.
-3. **Catastrophic Collapse Zone** ($W \le 4$): At $W = 4$ ($F = 2, \Delta = 0.25$), quantization step noise balloons. The differential noise $\sqrt{2}\sigma_{z2} \approx 1.50$ reaches the same order of magnitude as the class decision margin. For samples with margins below 2.96, the flip probability surges to over 2.4% to 50%. The signal-to-noise ratio collapses to **8.0 dB**, causing widespread decision flips and degrading recognition accuracy from 98.00% to **85.00%** (-13.00% drop).
+   Zero marginal accuracy benefit exists for **W > 11 bits**.
+2. **Benign Degradation Zone** (8 ≤ W < 11): At $W = 8$ ($F = 5$), the noise ratio is 15.8× smaller than the 10th percentile margin. The SNR remains high (28.4 dB), preserving 98.00% accuracy.
+3. **Catastrophic Collapse Zone** (W ≤ 4): At $W = 4$ ($F = 2, \Delta = 0.25$), quantization step noise balloons. The differential noise $\sqrt{2}\sigma_{z2} \approx 1.50$ reaches the same order of magnitude as the class decision margin. For samples with margins below 2.96, the flip probability surges to over 2.4% to 50%. The signal-to-noise ratio collapses to **8.0 dB**, causing widespread decision flips and degrading recognition accuracy from 98.00% to **85.00%** (-13.00% drop).
 
 This rigorously proves that **W = 11 bits represents the mathematical Saturation Knee Point (拐点)** of the 784-64-10 MLP accelerator.
 
@@ -227,7 +227,7 @@ To identify optimal hardware trade-offs, we analyze the multi-objective interact
 
 #### Figure 1: Bitwidth vs. Accuracy (Saturation Knee Point)
 ![Bitwidth vs Accuracy](assets/bitwidth_vs_accuracy.png)
-*Figure 1 clearly illustrates the saturation plateau for $W \ge 11$ bits at 98.00%, and the sharp accuracy degradation below 8 bits, crossing below the 90% project specification threshold at 4 bits.*
+*Figure 1 clearly illustrates the saturation plateau for W ≥ 11 bits at 98.00%, and the sharp accuracy degradation below 8 bits, crossing below the 90% project specification threshold at 4 bits.*
 
 #### Figure 2: Hardware Resource Scaling vs. Quantization Precision
 ![Bitwidth vs Resources](assets/bitwidth_vs_resources.png)
@@ -235,7 +235,7 @@ To identify optimal hardware trade-offs, we analyze the multi-objective interact
 
 #### Figure 3: Design Space Exploration Pareto Frontier (Accuracy vs. Area-Delay Product)
 ![Pareto Frontier](assets/pareto_frontier.png)
-*Figure 3 plots Accuracy (%) against the Area-Delay Product ($\text{LUTs} \times \text{Latency } [\mu\text{s}]$), highlighting the non-dominated Pareto frontier points.*
+*Figure 3 plots Accuracy (%) against the Area-Delay Product (LUTs × Latency [µs]), highlighting the non-dominated Pareto frontier points.*
 
 ---
 
@@ -250,12 +250,12 @@ $$
 ### 5.1 Formal Dominance Evaluations
 1. **16-bit High-Precision is STRICTLY DOMINATED**:
    - Comparing 16-bit ($W=16$) vs 11-bit Baseline ($W=11$):
-     - **Accuracy**: $\text{Accuracy}(11\text{b}) = 98.00\% = \text{Accuracy}(16\text{b}) = 98.00\%$ (Identical)
-     - **Logic Area**: $\text{LUT}(11\text{b}) = 2,100 \lt \text{LUT}(16\text{b}) = 3,200$ (-34.4% savings)
-     - **Registers**: $\text{FF}(11\text{b}) = 2,280 \lt \text{FF}(16\text{b}) = 3,450$ (-33.9% savings)
-     - **Block RAM**: $\text{BRAM}(11\text{b}) = 2 \lt \text{BRAM}(16\text{b}) = 4$ (-50.0% savings)
-     - **Latency**: $\text{Latency}(11\text{b}) = 31.8 \ \mu\text{s} \lt \text{Latency}(16\text{b}) = 32.4 \ \mu\text{s}$
-     - **Timing Slack**: $\text{Slack}(11\text{b}) = +2.45 \text{ ns} \gt \text{Slack}(16\text{b}) = +1.82 \text{ ns}$
+     - **Accuracy**: **Acc(11b) = 98.00% == Acc(16b) = 98.00%** (Identical)
+     - **Logic Area**: **LUT(11b) = 2,100** < **LUT(16b) = 3,200** (-34.4% savings)
+     - **Registers**: **FF(11b) = 2,280** < **FF(16b) = 3,450** (-33.9% savings)
+     - **Block RAM**: **BRAM(11b) = 2** < **BRAM(16b) = 4** (-50.0% savings)
+     - **Latency**: **Latency(11b) = 31.8 µs** < **Latency(16b) = 32.4 µs**
+     - **Timing Slack**: **Slack(11b) = +2.45 ns** > **Slack(16b) = +1.82 ns**
    - **Conclusion**: 11-bit strictly dominates 16-bit across every single hardware metric with zero accuracy compromise. Deploying 16-bit in an edge FPGA is an architectural inefficiency.
 2. **Identification of the Non-Dominated Pareto Frontier**:
    The Pareto-optimal frontier $\mathcal{P}^*$ consists of exactly three configurations, each optimal under a distinct engineering constraint:

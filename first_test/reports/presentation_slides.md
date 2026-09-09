@@ -68,7 +68,7 @@
 | **LUT** | **7,203** | 53,200 | **13.5%** |
 | **FF** | **5,642** | 106,400 | **5.3%** |
 - **Clock:** 10.0 ns (100 MHz).
-- **Inference Latency:** **8,173 clock cycles** (**81.7 $\mu$s**).
+- **Inference Latency:** **8,173 clock cycles** (**81.7 µs**).
 - **Throughput:** **12,235 inferences / second**.
 > **Speaker Notes:** "At only 21.8% DSP utilization and 50.7% BRAM utilization, our accelerator leaves over 75% of the FPGA available for video pipelines and CPU interconnects."
 
@@ -116,7 +116,7 @@
 ---
 
 ### Slide 12: Level 3 Bonus: Multi-Bitwidth Physical FPGA Synthesis
-| Configuration | Precision | SIMD | Accuracy | Latency ($\mu$s) | Throughput (FPS) | DSP48E | BRAM_18K |
+| Configuration | Precision | SIMD | Accuracy | Latency (µs) | Throughput (FPS) | DSP48E | BRAM_18K |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **`W16_SIMD16`** | 16-bit | 16 | **97.76%** | 81.7 | 12,235 | 48 (21.8%) | 142 (50.7%) |
 | **`W8_SIMD16`** | 8-bit | 16 | **97.67%** | 87.8 | 11,387 | **24 (10.9%)** | **77 (27.5%)** |
@@ -129,7 +129,7 @@
 ### Slide 13: The Physical Pareto Frontier & Unroll Boundary Test
 - **Pareto Knee Point (`W8_SIMD32`):**
   - **Accuracy:** 97.67% (only 0.09% drop from FP32).
-  - **Speedup:** 32% latency reduction (55.8 $\mu$s per image, **17,928 FPS**).
+  - **Speedup:** 32% latency reduction (55.8 µs per image, **17,928 FPS**).
   - **Memory:** 100 BRAMs (saving 42 BRAMs over 16-bit).
   - **DSP:** Consumes the exact same 48 DSP slices as 16-bit SIMD-16 by leveraging narrower 8-bit multiplier packing!
 - **Catastrophic 4-bit Cliff:** Accuracy drops by 14.14% to 83.62% due to severe quantization noise in linear PTQ.
