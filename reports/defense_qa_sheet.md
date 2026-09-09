@@ -92,15 +92,15 @@
 
 1. **Product Dynamic Range**: Multiplying two `ap_fixed<11, 3>` numbers generates a product with:
 
-   $$
-   W_{\text{prod}} = 11 + 11 = 22 \text{ bits}, \quad I_{\text{prod}} = 3 + 3 = 6 \text{ bits}, \quad F_{\text{prod}} = 8 + 8 = 16 \text{ bits}
-   $$
+$$
+W_{\text{prod}} = 11 + 11 = 22 \text{ bits}, \quad I_{\text{prod}} = 3 + 3 = 6 \text{ bits}, \quad F_{\text{prod}} = 8 + 8 = 16 \text{ bits}
+$$
 
 2. **Integer Headroom for 784 Accumulations**: Summing $N = 784$ product terms incurs a potential worst-case bit growth of:
 
-   $$
-   \Delta I_{\text{accum}} = \lceil \log_2(784) \rceil = 10 \text{ bits}
-   $$
+$$
+\Delta I_{\text{accum}} = \lceil \log_2(784) \rceil = 10 \text{ bits}
+$$
 
    Adding this to the product's 6 integer bits would theoretically suggest ${6 + 10 = 16}$ integer bits. However, empirical statistics show that input pixels have a mean of 0.12 and weights have a mean of 0.002. The maximum positive logit observed across all test vectors is +10.54. Allocating **$I = 8$ integer bits** supports numbers up to $[-128.0, +127.999]$, providing an immense safety margin of 12× over the maximum observed activation.
 3. **Fractional Preservation**: Preserving all 16 fractional bits ($F = 16$) throughout the 4-stage binary adder tree prevents intermediate truncation noise from accumulating across the 784 additions.
@@ -177,9 +177,9 @@ custom_data_t l1_act[L1_NODES];
 ```
 1. **Mathematical Proof of Conflict-Free Access**: For any block chunk $b$ and SIMD lane $k \in [0, 15]$, the global buffer address is $\text{Addr} = b \cdot 16 + k$. Under cyclic partitioning with factor 16, this address maps to physical memory bank:
 
-   $$
-   \text{BankID} = (b \cdot 16 + k) \pmod{16} = k
-   $$
+$$
+\text{BankID} = (b \cdot 16 + k) \pmod{16} = k
+$$
 
    Because the bank index depends solely on $k$, all 16 parallel SIMD lanes read from **16 distinct physical BRAM/LUTRAM banks** simultaneously.
 2. **Result**: Zero memory port collisions occur, sustaining the full memory bandwidth of 17.6 Gbps and achieving a deterministic Initiation Interval of **$\text{II} = 1$** across both FC1 and FC2 compute loops."
@@ -303,9 +303,9 @@ $$
 2. **Mathematical Definition of the Saturation Knee Point**:
    The saturation knee point $W^*$ is defined as the minimum bitwidth where the second derivative of accuracy with respect to precision transitions to zero:
 
-   $$
-   W^* = \min \left\{ W \ \Big| \ \frac{\partial \text{Acc}}{\partial W} \equiv 0 \quad \text{and} \quad \frac{\partial^2 \text{Acc}}{\partial W^2} \le 0 \right\}
-   $$
+$$
+W^* = \min \left\{ W \ \Big| \ \frac{\partial \text{Acc}}{\partial W} \equiv 0 \quad \text{and} \quad \frac{\partial^2 \text{Acc}}{\partial W^2} \le 0 \right\}
+$$
 
    In our empirical sweep:
    - $\frac{\Delta \text{Acc}}{\Delta W}\Big|_{11\text{b} \to 16\text{b}} = \frac{98.00\% - 98.00\%}{16 - 11} = \mathbf{0.00\% / \text{bit}}$

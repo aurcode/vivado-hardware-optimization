@@ -100,27 +100,27 @@ $$
 Direct measurement on the frozen model weights (`hw/weights.h`) and test set (`hw/test_inputs.h`) yields:
 - **FC1 Weights ($W_1 \in \mathbb{R}^{64 \times 784}$)**:
 
-  $$
-  \text{Mean}(\mu_{w1}) = +0.00198 \approx 0, \quad \text{Variance}(\sigma_{w1}^2) = 0.01342, \quad \overline{w_1^2} = \sigma_{w1}^2 + \mu_{w1}^2 = 0.01342
-  $$
+$$
+\text{Mean}(\mu_{w1}) = +0.00198 \approx 0, \quad \text{Variance}(\sigma_{w1}^2) = 0.01342, \quad \overline{w_1^2} = \sigma_{w1}^2 + \mu_{w1}^2 = 0.01342
+$$
 
 - **FC2 Weights ($W_2 \in \mathbb{R}^{10 \times 64}$)**:
 
-  $$
-  \text{Mean}(\mu_{w2}) = -0.03768, \quad \text{Variance}(\sigma_{w2}^2) = 0.07033, \quad \overline{w_2^2} = 0.07175
-  $$
+$$
+\text{Mean}(\mu_{w2}) = -0.03768, \quad \text{Variance}(\sigma_{w2}^2) = 0.07033, \quad \overline{w_2^2} = 0.07175
+$$
 
 - **Input Images ($X \in [0.0, 1.0]^{784}$)**:
 
-  $$
-  \text{Mean}(\mu_x) = 0.11989, \quad \text{Second Moment}(\overline{x^2}) = 0.10196
-  $$
+$$
+\text{Mean}(\mu_x) = 0.11989, \quad \text{Second Moment}(\overline{x^2}) = 0.10196
+$$
 
 - **Logit Decision Margin ($\Delta z = z_{2, \text{top1}} - z_{2, \text{top2}}$)**:
 
-  $$
-  \text{Mean}(\Delta z) = 6.41, \quad \text{Median}(\Delta z) = 6.40, \quad \text{10th Percentile}(\Delta z_{10\%}) = 2.96, \quad \text{Min}(\Delta z_{\min}) = 0.0336
-  $$
+$$
+\text{Mean}(\Delta z) = 6.41, \quad \text{Median}(\Delta z) = 6.40, \quad \text{10th Percentile}(\Delta z_{10\%}) = 2.96, \quad \text{Min}(\Delta z_{\min}) = 0.0336
+$$
 
 ### 3.3 784-Dimensional Error Accumulation in Layer 1 (FC1)
 Each pre-activation neuron $j \in [0, 63]$ in FC1 computes the 784-dimensional dot product:
@@ -156,23 +156,23 @@ $$
 ### 3.4 Propagation Through ReLU and Layer 2 (FC2)
 1. **ReLU Gate**: For a zero-mean Gaussian variable, ReLU acts as a half-wave rectifier, transmitting roughly half the variance:
 
-   $$
-   \sigma_{a1}^2 \approx \frac{1}{2} \sigma_{z1}^2 \approx 3.769 \cdot \Delta^2
-   $$
+$$
+\sigma_{a1}^2 \approx \frac{1}{2} \sigma_{z1}^2 \approx 3.769 \cdot \Delta^2
+$$
 
 2. **FC2 Inner Product ($N_2 = 64$ hidden nodes)**:
 
-   $$
-   \tilde{z}_{2, c} = \sum_{j=1}^{64} \tilde{a}_{1, j} \tilde{w}_{2, cj}
-   $$
+$$
+\tilde{z}_{2, c} = \sum_{j=1}^{64} \tilde{a}_{1, j} \tilde{w}_{2, cj}
+$$
 
-   $$
-   \sigma_{z2}^2 = 64 \cdot \left( \overline{w_2^2} \sigma_{a1}^2 + \overline{a_1^2} \frac{\Delta_w^2}{12} \right) \approx 64 \cdot \left( 0.07175 \cdot 3.769 \cdot \Delta^2 + 0.125 \cdot \frac{\Delta^2}{12} \right) \approx 18.0 \cdot \Delta^2
-   $$
+$$
+\sigma_{z2}^2 = 64 \cdot \left( \overline{w_2^2} \sigma_{a1}^2 + \overline{a_1^2} \frac{\Delta_w^2}{12} \right) \approx 64 \cdot \left( 0.07175 \cdot 3.769 \cdot \Delta^2 + 0.125 \cdot \frac{\Delta^2}{12} \right) \approx 18.0 \cdot \Delta^2
+$$
 
-   $$
-   \sigma_{z2} \approx \sqrt{18.0} \cdot \Delta = 4.24 \cdot 2^{-F}
-   $$
+$$
+\sigma_{z2} \approx \sqrt{18.0} \cdot \Delta = 4.24 \cdot 2^{-F}
+$$
 
 ### 3.5 Decision Boundary Crossing Probability & Saturation Knee Point
 A classification error (flip) occurs when the perturbation between the true top-1 logit and a competing logit exceeds the original decision margin $\Delta z = z_{\text{top1}} - z_{\text{top2}}$.
@@ -207,9 +207,9 @@ Precision Tier | Radix | Frac (F) | Step Size (Delta) | sigma_z2 | Diff Noise (s
 #### Analytical Conclusions from the Proof:
 1. **$W \ge 11$ Saturation Zone**: At $W = 11$ ($F = 8$), the margin ratio for the 10th percentile sample is $\frac{2.96}{0.02343} = 126.3$. The flip probability is $Q(126.3) \approx 10^{-3460} \equiv 0$. Even for the single most marginal sample in the test set ($\Delta z_{\min} = 0.0336$), the ratio is $\frac{0.0336}{0.02343} = 1.43$, giving $P(\text{flip}) \approx 0.07$ (less than 1 sample flip). Increasing precision to 16 bits ($F = 13$) reduces noise to 0.00073, but because $P(\text{flip})$ is already identically zero at 11 bits, the marginal gain is:
 
-   $$
-   \Delta \text{Acc}(16\text{b} - 11\text{b}) \equiv 0.00\%
-   $$
+$$
+\Delta \text{Acc}(16\text{b} - 11\text{b}) \equiv 0.00\%
+$$
 
    *Zero marginal accuracy benefit exists for $W \gt 11$ bits.*
 2. **${8 \le W \lt 11}$ Benign Degradation Zone**: At $W = 8$ ($F = 5$), the noise ratio is 15.8× smaller than the 10th percentile margin. The SNR remains high (28.4 dB), preserving 98.00% accuracy.
@@ -261,23 +261,23 @@ $$
    The Pareto-optimal frontier $\mathcal{P}^*$ consists of exactly three configurations, each optimal under a distinct engineering constraint:
    - **Frontier Point 1: 11-bit Baseline (Accuracy-Optimal)**:
 
-     $$
-     \text{Acc} = 98.00\%, \quad \text{LUT} = 2,100, \quad \text{DSP} = 16, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 66,780
-     $$
+$$
+\text{Acc} = 98.00\%, \quad \text{LUT} = 2,100, \quad \text{DSP} = 16, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 66,780
+$$
 
      *Achieves maximum accuracy with zero quantization loss, consuming only 7.3% DSPs on XC7Z020.*
    - **Frontier Point 2: 8-bit Compact (Area-Optimal)**:
 
-     $$
-     \text{Acc} = 98.00\%, \quad \text{LUT} = 1,450, \quad \text{DSP} = 8, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 46,110
-     $$
+$$
+\text{Acc} = 98.00\%, \quad \text{LUT} = 1,450, \quad \text{DSP} = 8, \quad \text{Latency} = 31.8 \ \mu\text{s}, \quad \text{ADP} = 46,110
+$$
 
      *Maintains 98.00% accuracy while cutting DSP usage in half (from 16 to 8 DSPs) and reducing LUTs by 31.0% vs 11-bit.*
    - **Frontier Point 3: 8-bit Parallel-32 (Throughput-Optimal)**:
 
-     $$
-     \text{Acc} = 98.00\%, \quad \text{LUT} = 2,890, \quad \text{DSP} = 16, \quad \text{Latency} = 16.1 \ \mu\text{s}, \quad \text{ADP} = 46,529
-     $$
+$$
+\text{Acc} = 98.00\%, \quad \text{LUT} = 2,890, \quad \text{DSP} = 16, \quad \text{Latency} = 16.1 \ \mu\text{s}, \quad \text{ADP} = 46,529
+$$
 
      *Doubles SIMD width to 32 lanes, cutting inference latency by 50% to 16.1 µs and elevating throughput to 62,111 FPS.*
 

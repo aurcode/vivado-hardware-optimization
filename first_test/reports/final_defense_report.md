@@ -75,9 +75,9 @@ To avoid floating-point hardware without sacrificing precision:
 - **Multiplier Products ($\mathbf{p} = \mathbf{x} \cdot \mathbf{W}$):** Accumulate at scale $S_{\text{prod}} = S_{\text{act}} \times S_{\text{w}} = 2^{24}$.
 - **Midpoint Rescaling:** Products are rescaled back to $S_{\text{act}} = 2^{10}$ using an arithmetic right-shift with midpoint rounding:
 
-  $$
-  \mathbf{a}_{\text{rescaled}} = \left\lfloor \frac{\mathbf{z} + 2^{13}}{2^{14}} \right\rfloor = (\mathbf{z} + 8192) \gg 14
-  $$
+$$
+\mathbf{a}_{\text{rescaled}} = \left\lfloor \frac{\mathbf{z} + 2^{13}}{2^{14}} \right\rfloor = (\mathbf{z} + 8192) \gg 14
+$$
 
 ---
 

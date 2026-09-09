@@ -283,11 +283,11 @@ Inspection of the synthesized RTL and synthesis report confirms:
    ```
 3. **Reuse Factor**:
 
-   $$
-   \text{Hardware Reuse Factor} = \frac{\text{Virtual SIMD Ops}}{\text{Physical SIMD Units}} = \frac{3,136 + 40}{16 \text{ units} \times 1 \text{ cycle}} = \mathbf{198.5\times \text{ temporal reuse}}
-   $$
+$$
+\text{Hardware Reuse Factor} = \frac{\text{Virtual SIMD Ops}}{\text{Physical SIMD Units}} = \frac{3,136 + 40}{16 \text{ units} \times 1 \text{ cycle}} = \mathbf{198.5\times} \textbf{ temporal reuse}
+$$
 
-   This formally establishes complete compliance with the Level 1 hardware reuse mandate.
+This formally establishes complete compliance with the Level 1 hardware reuse mandate.
 
 ---
 

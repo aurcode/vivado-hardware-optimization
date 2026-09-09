@@ -111,9 +111,9 @@ where $\omega_0(t), \omega_1(t)$ are background/foreground probabilities and $\m
 To eliminate paper texture and scanning sensor noise without eroding thin pen strokes, a **soft cutoff filter** is applied:
 
 $$
-Y_{\text{clean}}(x, y) = \begin{cases} 
-Y_{\text{inv}}(x, y), & \text{if } Y_{\text{inv}}(x, y) \ge 0.7 \cdot T_{\text{otsu}} \\ 
-0, & \text{if } Y_{\text{inv}}(x, y) \lt 0.7 \cdot T_{\text{otsu}} 
+Y_{\text{clean}}(x, y) = \begin{cases}
+Y_{\text{inv}}(x, y), & \text{if } Y_{\text{inv}}(x, y) \ge 0.7 \cdot T_{\text{otsu}} \\
+0, & \text{if } Y_{\text{inv}}(x, y) \lt 0.7 \cdot T_{\text{otsu}}
 \end{cases}
 $$
 
@@ -252,9 +252,9 @@ Each neuron $j$ in FC1 learns a rigid, position-sensitive template over the ${28
 - **Real-World Handwriting**: Ballpoint pens and mechanical pencils on paper create sharp, high-contrast, binary-like strokes with a physical width of only **1.0 to 1.8 pixels**.
 - **Impact on Activation Energy**:
 
-  $$
-  \text{Total Stroke Energy} = \sum_{i=0}^{783} X_i
-  $$
+$$
+\text{Total Stroke Energy} = \sum_{i=0}^{783} X_i
+$$
 
   MNIST samples exhibit an average stroke energy of $E_{\text{MNIST}} \approx 102.5$. In contrast, thin ballpoint strokes exhibit $E_{\text{real}} \approx 42.8$ (58.2% reduction in signal mass). In a linear layer without input gain control, the inner product $W_1 \cdot X$ scales proportionally to stroke mass. This dampens the post-ReLU activations in Layer 1, shrinking the output logit separation from 6.41 down to 3.38.
 
@@ -334,9 +334,9 @@ To integrate Level 2 preprocessing with the Level 1 hardware accelerator on Zynq
    - Returns predicted digit to PS via AXI-Lite register `0x18`.
 3. **End-to-End System Frame Rate**:
 
-   $$
-   T_{\text{total}} = T_{\text{preproc}} + T_{\text{AXI}} + T_{\text{accel}} \approx 1.85\text{ ms} + 0.02\text{ ms} + 0.03\text{ ms} = 1.90\text{ ms}
-   $$
+$$
+T_{\text{total}} = T_{\text{preproc}} + T_{\text{AXI}} + T_{\text{accel}} \approx 1.85\text{ ms} + 0.02\text{ ms} + 0.03\text{ ms} = 1.90\text{ ms}
+$$
 
    Achieves **$\approx$ 526 frames per second**, vastly exceeding standard 30/60 FPS camera streaming requirements.
 
